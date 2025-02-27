@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Financial Planning Tool</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f7f7f7; }
+    .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
+    h1, h2 { color: #333; }
+    label { display: inline-block; width: 200px; margin-top: 8px; }
+    input, select { margin-top: 8px; margin-bottom: 8px; padding: 4px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 8px; text-align: center; border: 1px solid #ccc; }
+    button { margin: 10px 0; padding: 8px 12px; }
+    a { color: #0066cc; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Financial Planning Tool</h1>
+    
+    <!-- Profile Section -->
+    <section id="profile">
+      <h2>Profile Information</h2>
+      <label for="birthday">Birthday:</label>
+      <input type="date" id="birthday" name="birthday"><br>
+      
+      <label for="marital-status">Marital Status:</label>
+      <select id="marital-status" name="marital-status">
+        <option value="single">Single</option>
+        <option value="married">Married</option>
+      </select><br>
+      
+      <label for="standard-deduction">Standard Tax Deduction:</label>
+      <input type="number" id="standard-deduction" name="standard-deduction" value="12500"><br>
+    </section>
+    
+    <!-- Income & Expenses Section -->
+    <section id="income-expenses">
+      <h2>Income & Expenses</h2>
+      <label for="current-income">Current Annual Income:</label>
+      <input type="number" id="current-income" name="current-income" value="50000"><br>
+      
+      <label for="income-growth">Income Growth Rate (%):</label>
+      <input type="number" id="income-growth" name="income-growth" value="3"><br>
+      
+      <label for="current-expenses">Current Annual Expenses:</label>
+      <input type="number" id="current-expenses" name="current-expenses" value="40000"><br>
+      
+      <label for="expense-growth">Expense Growth Rate (%):</label>
+      <input type="number" id="expense-growth" name="expense-growth" value="2"><br>
+    </section>
+    
+    <!-- Advanced Settings -->
+    <section id="advanced-settings">
+      <h2>
+        <a href="#" onclick="toggleAdvancedSettings(); return false;">
+          Advanced Settings (click to toggle)
+        </a>
+      </h2>
+      <div id="advanced-settings-panel" style="display:none;">
+        <label for="inflation-rate">General Inflation Rate (%):</label>
+        <input type="number" id="inflation-rate" name="inflation-rate" value="2.5"><br>
+        
+        <label for="education-inflation">Education Inflation Rate (%):</label>
+        <input type="number" id="education-inflation" name="education-inflation" value="4"><br>
+        
+        <label for="healthcare-inflation">Healthcare Inflation Rate (%):</label>
+        <input type="number" id="healthcare-inflation" name="healthcare-inflation" value="3"><br>
+        
+        <label for="default-return">Default Investment Return (%):</label>
+        <input type="number" id="default-return" name="default-return" value="5"><br>
+        
+        <label for="tax-deduction-growth">Tax Deduction Growth Rate (%):</label>
+        <input type="number" id="tax-deduction-growth" name="tax-deduction-growth" value="3"><br>
+      </div>
+    </section>
+    
+    <!-- Accounts Section -->
+    <section id="accounts">
+      <h2>Accounts</h2>
+      <table id="accounts-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Owner</th>
+            <th>Current Balance</th>
+            <th>Monthly Contribution</th>
+            <th>Expected Return (%)</th>
+            <th>Company Match (if applicable)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="accounts-body">
+          <!-- Dynamically added rows will appear here -->
+        </tbody>
+      </table>
+      <button onclick="addAccountRow();">Add Account</button>
+    </section>
+    
+    <!-- Goals Section -->
+    <section id="goals">
+      <h2>Goals</h2>
+      <table id="goals-table">
+        <thead>
+          <tr>
+            <th>Goal Description</th>
+            <th>Target Age/Year</th>
+            <th>Target Amount</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="goals-body">
+          <!-- Dynamically added rows will appear here -->
+        </tbody>
+      </table>
+      <button onclick="addGoalRow();">Add Goal</button>
+    </section>
+    
+    <!-- Projection Results Section -->
+    <section id="projection">
+      <h2>Projection Results</h2>
+      <button onclick="generateProjection();">Generate Projection</button>
+      <div id="results"></div>
+    </section>
+    
+  </div>
+  
+  <script>
+    // Toggle Advanced Settings panel visibility
+    function toggleAdvancedSettings() {
+      var panel = document.getElementById("advanced-settings-panel");
+      panel.style.display = (panel.style.display === "none") ? "block" : "none";
+    }
+    
+    // Add a new account row dynamically
+    function addAccountRow() {
+      var table = document.getElementById("accounts-body");
+      var row = document.createElement("tr");
+      row.innerHTML = `
+        <td>
+          <select class="account-type" onchange="toggleCompanyMatch(this);">
+            <option value="401k">401(k)</option>
+            <option value="ira-traditional">IRA Traditional</option>
+            <option value="ira-roth">IRA Roth</option>
+            <option value="brokerage">Brokerage</option>
+            <option value="savings">Savings</option>
+            <option value="checking">Checking</option>
+            <option value="529">529 Plan</option>
+          </select>
+        </td>
+        <td>
+          <select class="account-owner">
+            <option value="self">Self</option>
+            <option value="partner">Partner</option>
+          </select>
+        </td>
+        <td><input type="number" class="account-balance" value="0"></td>
+        <td><input type="number" class="account-contribution" value="0"></td>
+        <td><input type="number" class="account-return" value="5"></td>
+        <td><input type="number" class="account-match" value="0"></td>
+        <td><button onclick="removeRow(this);">Remove</button></td>
+      `;
+      table.appendChild(row);
+      // Set company match field appropriately
+      toggleCompanyMatch(row.querySelector(".account-type"));
+    }
+    
+    // Hide or enable the company match field based on account type
+    function toggleCompanyMatch(selectElem) {
+      var row = selectElem.parentElement.parentElement;
+      var matchInput = row.querySelector(".account-match");
+      if (selectElem.value === "401k") {
+        matchInput.disabled = false;
+        matchInput.style.backgroundColor = "";
+      } else {
+        matchInput.disabled = true;
+        matchInput.style.backgroundColor = "#e0e0e0";
+        matchInput.value = 0;
+      }
+    }
+    
+    // Add a new goal row dynamically
+    function addGoalRow() {
+      var table = document.getElementById("goals-body");
+      var row = document.createElement("tr");
+      row.innerHTML = `
+        <td><input type="text" class="goal-description" placeholder="e.g., Retirement, Home Purchase"></td>
+        <td><input type="text" class="goal-target" placeholder="Age or Year"></td>
+        <td><input type="number" class="goal-amount" value="0"></td>
+        <td><button onclick="removeRow(this);">Remove</button></td>
+      `;
+      table.appendChild(row);
+    }
+    
+    // Remove a row from a table (used in both Accounts and Goals)
+    function removeRow(button) {
+      var row = button.parentElement.parentElement;
+      row.parentElement.removeChild(row);
+    }
+    
+    // Generate the financial projection
+    function generateProjection() {
+      // Read basic user inputs
+      var birthday = new Date(document.getElementById("birthday").value);
+      var maritalStatus = document.getElementById("marital-status").value;
+      var standardDeduction = parseFloat(document.getElementById("standard-deduction").value);
+      
+      var currentIncome = parseFloat(document.getElementById("current-income").value);
+      var incomeGrowth = parseFloat(document.getElementById("income-growth").value) / 100;
+      var currentExpenses = parseFloat(document.getElementById("current-expenses").value);
+      var expenseGrowth = parseFloat(document.getElementById("expense-growth").value) / 100;
+      
+      var inflationRate = parseFloat(document.getElementById("inflation-rate").value) / 100;
+      var defaultReturn = parseFloat(document.getElementById("default-return").value) / 100;
+      var taxDeductionGrowth = parseFloat(document.getElementById("tax-deduction-growth").value) / 100;
+      
+      // Determine the user's current age
+      var today = new Date();
+      var age = today.getFullYear() - birthday.getFullYear();
+      if(today.getMonth() < birthday.getMonth() || 
+         (today.getMonth() === birthday.getMonth() && today.getDate() < birthday.getDate())){
+        age--;
+      }
+      
+      // Set projection timeline until age 100
+      var projectionYears = 100 - age;
+      
+      // Read account information from table rows
+      var accounts = [];
+      var accountRows = document.querySelectorAll("#accounts-body tr");
+      accountRows.forEach(function(row) {
+        var type = row.querySelector(".account-type").value;
+        var owner = row.querySelector(".account-owner").value;
+        var balance = parseFloat(row.querySelector(".account-balance").value);
+        var contribution = parseFloat(row.querySelector(".account-contribution").value);
+        var rate = parseFloat(row.querySelector(".account-return").value) / 100;
+        var match = parseFloat(row.querySelector(".account-match").value);
+        accounts.push({type, owner, balance, contribution, rate, match});
+      });
+      
+      // Define retirement assumptions
+      var retirementAge = 62; // could be refined by reading from a goal
+      var safeWithdrawalRate = 0.04;
+      
+      // Use portfolioValue to track total savings in retirement phase
+      var portfolioValue = accounts.reduce((sum, acct) => sum + acct.balance, 0);
+      
+      // Prepare results table header
+      var resultsHTML = `<table>
+          <tr>
+            <th>Year</th>
+            <th>Age</th>
+            <th>Income</th>
+            <th>Expenses</th>
+            <th>Net Cash Flow</th>
+            <th>Total Savings</th>
+          </tr>`;
+          
+      var currentYear = today.getFullYear();
+      var income = currentIncome;
+      var expenses = currentExpenses;
+      
+      // Loop through each year in the projection period
+      for (var i = 0; i <= projectionYears; i++) {
+        var year = currentYear + i;
+        var currentAge = age + i;
+        
+        // Pre-retirement: update each account with contributions and compound interest
+        if (currentAge < retirementAge) {
+          accounts.forEach(function(acct) {
+            var annualContribution = acct.contribution * 12;
+            if (acct.type === "401k") {
+              annualContribution += acct.match;
+            }
+            // Use account-specific rate (or defaultReturn if not provided)
+            acct.balance = acct.balance * (1 + (acct.rate || defaultReturn)) + annualContribution;
+          });
+          portfolioValue = accounts.reduce((sum, acct) => sum + acct.balance, 0);
+        } else {
+          // Post-retirement: apply interest growth to the total portfolio and subtract withdrawals
+          portfolioValue = portfolioValue * (1 + defaultReturn);
+          var withdrawal = portfolioValue * safeWithdrawalRate;
+          portfolioValue -= withdrawal;
+        }
+        
+        // Calculate net cash flow for the year
+        var netCashFlow = income - expenses;
+        
+        resultsHTML += `<tr>
+                          <td>${year}</td>
+                          <td>${currentAge}</td>
+                          <td>$${income.toFixed(2)}</td>
+                          <td>$${expenses.toFixed(2)}</td>
+                          <td>$${netCashFlow.toFixed(2)}</td>
+                          <td>$${portfolioValue.toFixed(2)}</td>
+                        </tr>`;
+                        
+        // Update income and expenses for next year using exponential growth
+        income *= (1 + incomeGrowth);
+        expenses *= (1 + expenseGrowth);
+      }
+      
+      resultsHTML += `</table>`;
+      document.getElementById("results").innerHTML = resultsHTML;
+    }
+  </script>
+</body>
+</html>
