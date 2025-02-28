@@ -1,310 +1,2568 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Financial Planning Tool</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Savings-Based Financial Planning Tool</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f7f7f7; }
-    .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
-    h1, h2 { color: #333; }
-    label { display: inline-block; width: 200px; margin-top: 8px; }
-    input, select { margin-top: 8px; margin-bottom: 8px; padding: 4px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { padding: 8px; text-align: center; border: 1px solid #ccc; }
-    button { margin: 10px 0; padding: 8px 12px; }
-    a { color: #0066cc; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    :root {
+      --primary: #2c3e50;
+      --secondary: #3498db;
+      --accent: #e74c3c;
+      --light: #ecf0f1;
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+      --border-radius: 5px;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      line-height: 1.6;
+      color: var(--primary);
+      background-color: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    h1 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: var(--primary);
+      margin: 25px 0 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    h3 {
+      color: var(--primary);
+      margin: 20px 0 10px;
+    }
+    p {
+      margin-bottom: 15px;
+    }
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      background-color: var(--light);
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    input,
+    select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+    }
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--secondary);
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+    }
+    .input-group input,
+    .input-group select {
+      flex: 1;
+    }
+    button {
+      background-color: var(--secondary);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    button.add-btn {
+      background-color: var(--success);
+    }
+    button.add-btn:hover {
+      background-color: #27ae60;
+    }
+    button.remove-btn {
+      background-color: var(--danger);
+    }
+    button.remove-btn:hover {
+      background-color: #c0392b;
+    }
+    button.edit-btn {
+      background-color: var(--warning);
+    }
+    button.edit-btn:hover {
+      background-color: #d35400;
+    }
+    button.save-btn {
+      background-color: var(--success);
+    }
+    button.save-btn:hover {
+      background-color: #27ae60;
+    }
+    .btn-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    table,
+    th,
+    td {
+      border: 1px solid #ddd;
+    }
+    th,
+    td {
+      text-align: left;
+      padding: 10px;
+    }
+    th {
+      background-color: var(--secondary);
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .success {
+      color: var(--success);
+    }
+    .warning {
+      color: var(--warning);
+    }
+    .danger {
+      color: var(--danger);
+    }
+    .hidden {
+      display: none;
+    }
+    .account-container,
+    .goal-container,
+    .windfall-container {
+      margin-bottom: 15px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      background-color: white;
+    }
+    .account-item,
+    .goal-item,
+    .windfall-item {
+      margin-bottom: 15px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      background-color: white;
+    }
+    .toggle-container {
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .toggle-container span {
+      margin-left: 10px;
+      font-weight: 600;
+    }
+    #results-section {
+      margin-top: 30px;
+    }
+    .summary-box {
+      background-color: var(--light);
+      border-left: 5px solid var(--secondary);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: var(--border-radius);
+    }
+    .result-status {
+      padding: 10px;
+      margin: 15px 0;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+    }
+    .success-bg {
+      background-color: rgba(46, 204, 113, 0.2);
+    }
+    .warning-bg {
+      background-color: rgba(243, 156, 18, 0.2);
+    }
+    .danger-bg {
+      background-color: rgba(231, 76, 60, 0.2);
+    }
+    #projection-table {
+      overflow-x: auto;
+    }
+    .info-text {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 5px;
+      font-style: italic;
+    }
+    .edit-mode .edit-form {
+      display: block;
+    }
+    .edit-mode .display-info {
+      display: none;
+    }
+    .display-info {
+      padding: 10px 0;
+    }
+    .display-info p {
+      margin: 5px 0;
+    }
+    .edit-form {
+      display: none;
+    }
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      border-radius: var(--border-radius);
+      width: 80%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: black;
+    }
+    .modal-body {
+      margin-top: 20px;
+    }
+    .modal-body h3 {
+      margin-top: 20px;
+    }
+    .modal-body code {
+      display: block;
+      background-color: #f5f5f5;
+      padding: 8px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .btn-secondary {
+      background-color: #6c757d;
+    }
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+    .positive {
+      color: var(--success);
+    }
+    .negative {
+      color: var(--danger);
+    }
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      .input-group {
+        flex-direction: column;
+        gap: 5px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Financial Planning Tool</h1>
-    
-    <!-- Profile Section -->
-    <section id="profile">
-      <h2>Profile Information</h2>
-      <label for="birthday">Birthday:</label>
-      <input type="date" id="birthday" name="birthday"><br>
-      
-      <label for="marital-status">Marital Status:</label>
-      <select id="marital-status" name="marital-status">
-        <option value="single">Single</option>
-        <option value="married">Married</option>
-      </select><br>
-      
-      <label for="standard-deduction">Standard Tax Deduction:</label>
-      <input type="number" id="standard-deduction" name="standard-deduction" value="12500"><br>
-    </section>
-    
-    <!-- Income & Expenses Section -->
-    <section id="income-expenses">
-      <h2>Income & Expenses</h2>
-      <label for="current-income">Current Annual Income:</label>
-      <input type="number" id="current-income" name="current-income" value="50000"><br>
-      
-      <label for="income-growth">Income Growth Rate (%):</label>
-      <input type="number" id="income-growth" name="income-growth" value="3"><br>
-      
-      <label for="current-expenses">Current Annual Expenses:</label>
-      <input type="number" id="current-expenses" name="current-expenses" value="40000"><br>
-      
-      <label for="expense-growth">Expense Growth Rate (%):</label>
-      <input type="number" id="expense-growth" name="expense-growth" value="2"><br>
-    </section>
-    
-    <!-- Advanced Settings -->
-    <section id="advanced-settings">
-      <h2>
-        <a href="#" onclick="toggleAdvancedSettings(); return false;">
-          Advanced Settings (click to toggle)
-        </a>
-      </h2>
-      <div id="advanced-settings-panel" style="display:none;">
-        <label for="inflation-rate">General Inflation Rate (%):</label>
-        <input type="number" id="inflation-rate" name="inflation-rate" value="2.5"><br>
-        
-        <label for="education-inflation">Education Inflation Rate (%):</label>
-        <input type="number" id="education-inflation" name="education-inflation" value="4"><br>
-        
-        <label for="healthcare-inflation">Healthcare Inflation Rate (%):</label>
-        <input type="number" id="healthcare-inflation" name="healthcare-inflation" value="3"><br>
-        
-        <label for="default-return">Default Investment Return (%):</label>
-        <input type="number" id="default-return" name="default-return" value="5"><br>
-        
-        <label for="tax-deduction-growth">Tax Deduction Growth Rate (%):</label>
-        <input type="number" id="tax-deduction-growth" name="tax-deduction-growth" value="3"><br>
+    <header>
+      <h1>Savings-Based Financial Planning Tool</h1>
+      <p>Pay your future self first - plan for tomorrow while living well today</p>
+    </header>
+
+    <section id="profile-section" class="section">
+      <h2>Personal Profile</h2>
+      <div class="form-group">
+        <label for="birthday">Birthday:</label>
+        <input type="date" id="birthday" name="birthday">
+      </div>
+      <div class="form-group">
+        <label for="marital-status">Marital Status:</label>
+        <select id="marital-status" name="marital-status">
+          <option value="single">Single</option>
+          <option value="married">Married</option>
+        </select>
+      </div>
+
+      <div id="name-fields-container" class="hidden">
+        <div class="form-group">
+          <label for="user-name">Your Name:</label>
+          <input type="text" id="user-name" name="user-name" value="You">
+        </div>
+        <div class="form-group">
+          <label for="spouse-name">Spouse's Name:</label>
+          <input type="text" id="spouse-name" name="spouse-name" value="Spouse">
+        </div>
       </div>
     </section>
-    
-    <!-- Accounts Section -->
-    <section id="accounts">
+
+    <section id="income-expense-section" class="section">
+      <h2>Income & Expenses</h2>
+
+      <!-- Single Income Field -->
+      <div id="single-income-container">
+        <div class="form-group">
+          <label for="current-income">Current Annual Income ($):</label>
+          <input type="number" id="current-income" name="current-income" value="70000" min="0">
+        </div>
+        <div class="form-group">
+          <label for="current-income-after-tax">Current Annual Income After-Tax ($):</label>
+          <input type="number" id="current-income-after-tax" name="current-income-after-tax" value="55000" min="0">
+        </div>
+      </div>
+
+      <!-- Dual Income Fields for Married -->
+      <div id="dual-income-container" class="hidden">
+        <div class="form-group">
+          <label for="current-income-self" id="income-label-self">Your Annual Income ($):</label>
+          <input type="number" id="current-income-self" name="current-income-self" value="70000" min="0">
+        </div>
+        <div class="form-group">
+          <label for="current-income-self-after-tax" id="income-label-self-after-tax">Your Annual Income After-Tax ($):</label>
+          <input type="number" id="current-income-self-after-tax" name="current-income-self-after-tax" value="55000" min="0">
+        </div>
+        <div class="form-group">
+          <label for="current-income-spouse" id="income-label-spouse">Spouse's Annual Income ($):</label>
+          <input type="number" id="current-income-spouse" name="current-income-spouse" value="60000" min="0">
+        </div>
+        <div class="form-group">
+          <label for="current-income-spouse-after-tax" id="income-label-spouse-after-tax">Spouse's Annual Income After-Tax ($):</label>
+          <input type="number" id="current-income-spouse-after-tax" name="current-income-spouse-after-tax" value="48000" min="0">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="current-expenses">Current Annual Household Expenses ($):</label>
+        <input type="number" id="current-expenses" name="current-expenses" value="50000" min="0">
+      </div>
+    </section>
+
+    <section id="social-security-section" class="section">
+      <h2>Social Security (Estimate)</h2>
+
+      <!-- Single Social Security Field -->
+      <div id="single-ss-container">
+        <div class="form-group">
+          <label for="ss-amount">Estimated Monthly Social Security Benefit ($):</label>
+          <input type="number" id="ss-amount" name="ss-amount" value="2000" min="0">
+        </div>
+        <div class="form-group">
+          <label for="ss-start-age">Start Age:</label>
+          <input type="number" id="ss-start-age" name="ss-start-age" value="67" min="62" max="70">
+        </div>
+      </div>
+
+      <!-- Dual Social Security Fields for Married -->
+      <div id="dual-ss-container" class="hidden">
+        <div class="form-group">
+          <label for="ss-amount-self" id="ss-label-self">Your Monthly Social Security Benefit ($):</label>
+          <input type="number" id="ss-amount-self" name="ss-amount-self" value="2000" min="0">
+        </div>
+        <div class="form-group">
+          <label for="ss-start-age-self" id="ss-start-age-label-self">Your Start Age:</label>
+          <input type="number" id="ss-start-age-self" name="ss-start-age-self" value="67" min="62" max="70">
+        </div>
+        <div class="form-group">
+          <label for="ss-amount-spouse" id="ss-label-spouse">Spouse's Monthly Social Security Benefit ($):</label>
+          <input type="number" id="ss-amount-spouse" name="ss-amount-spouse" value="1800" min="0">
+        </div>
+        <div class="form-group">
+          <label for="ss-start-age-spouse" id="ss-start-age-label-spouse">Spouse's Start Age:</label>
+          <input type="number" id="ss-start-age-spouse" name="ss-start-age-spouse" value="67" min="62" max="70">
+        </div>
+      </div>
+    </section>
+
+    <div class="toggle-container" id="advanced-toggle">
+      <button>Advanced Settings</button>
+      <span>Show global settings and assumptions</span>
+    </div>
+
+    <section id="advanced-section" class="section hidden">
+      <h2>Advanced Settings</h2>
+      <div class="form-group">
+        <label for="std-deduction">Standard Tax Deduction ($):</label>
+        <input type="number" id="std-deduction" name="std-deduction" value="14600" min="0">
+      </div>
+      <div class="form-group">
+        <label for="income-growth">Expected Annual Income Growth Rate (%):</label>
+        <input type="number" id="income-growth" name="income-growth" value="3" min="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="expense-growth-type">Expected Annual Expense Growth Rate:</label>
+        <select id="expense-growth-type" onchange="toggleExpenseGrowthInput()">
+          <option value="inflation">Use General Inflation Rate</option>
+          <option value="custom">Custom Rate</option>
+        </select>
+      </div>
+      <div class="form-group hidden" id="custom-expense-growth-container">
+        <label for="expense-growth">Custom Expense Growth Rate (%):</label>
+        <input type="number" id="expense-growth" name="expense-growth" value="2.5" min="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="inflation-rate">General Inflation Rate (%):</label>
+        <input type="number" id="inflation-rate" name="inflation-rate" value="2.5" min="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="education-inflation">Education Inflation Rate (%):</label>
+        <input type="number" id="education-inflation" name="education-inflation" value="4" min="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="healthcare-inflation">Healthcare Inflation Rate (%):</label>
+        <input type="number" id="healthcare-inflation" name="healthcare-inflation" value="3" min="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="ss-increase-type">Annual Social Security Increase:</label>
+        <select id="ss-increase-type" onchange="toggleSSIncreaseInput()">
+          <option value="inflation">Use General Inflation Rate</option>
+          <option value="custom">Custom Rate</option>
+        </select>
+      </div>
+      <div class="form-group hidden" id="custom-ss-increase-container">
+        <label for="ss-increase-rate">Custom Social Security Increase Rate (%):</label>
+        <input type="number" id="ss-increase-rate" name="ss-increase-rate" value="2.0" min="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="default-return">Default Investment Return Rate (%):</label>
+        <input type="number" id="default-return" name="default-return" value="5" min="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="tax-increase-rate">Tax Deduction Increase Rate (%):</label>
+        <input type="number" id="tax-increase-rate" name="tax-increase-rate" value="3" min="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="safe-withdrawal">Safe Withdrawal Rate (%):</label>
+        <input type="number" id="safe-withdrawal" name="safe-withdrawal" value="4" min="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="retirement-expense-type">Retirement Expenses:</label>
+        <select id="retirement-expense-type">
+          <option value="current">Based on Current Expenses</option>
+          <option value="withdrawal">Based on Safe Withdrawal Rate</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="max-age">Project Until Age:</label>
+        <input type="number" id="max-age" name="max-age" value="100" min="0" max="120">
+      </div>
+    </section>
+
+    <section id="accounts-section" class="section">
       <h2>Accounts</h2>
-      <table id="accounts-table">
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Owner</th>
-            <th>Current Balance</th>
-            <th>Monthly Contribution</th>
-            <th>Expected Return (%)</th>
-            <th>Company Match (if applicable)</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="accounts-body">
-          <!-- Dynamically added rows will appear here -->
-        </tbody>
-      </table>
-      <button onclick="addAccountRow();">Add Account</button>
-    </section>
-    
-    <!-- Goals Section -->
-    <section id="goals">
-      <h2>Goals</h2>
-      <table id="goals-table">
-        <thead>
-          <tr>
-            <th>Goal Description</th>
-            <th>Target Age/Year</th>
-            <th>Target Amount</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="goals-body">
-          <!-- Dynamically added rows will appear here -->
-        </tbody>
-      </table>
-      <button onclick="addGoalRow();">Add Goal</button>
-    </section>
-    
-    <!-- Projection Results Section -->
-    <section id="projection">
-      <h2>Projection Results</h2>
-      <button onclick="generateProjection();">Generate Projection</button>
-      <div id="results"></div>
-    </section>
-    
-  </div>
-  
-  <script>
-    // Toggle Advanced Settings panel visibility
-    function toggleAdvancedSettings() {
-      var panel = document.getElementById("advanced-settings-panel");
-      panel.style.display = (panel.style.display === "none") ? "block" : "none";
-    }
-    
-    // Add a new account row dynamically
-    function addAccountRow() {
-      var table = document.getElementById("accounts-body");
-      var row = document.createElement("tr");
-      row.innerHTML = `
-        <td>
-          <select class="account-type" onchange="toggleCompanyMatch(this);">
-            <option value="401k">401(k)</option>
-            <option value="ira-traditional">IRA Traditional</option>
-            <option value="ira-roth">IRA Roth</option>
+      <p>Add your current savings and investment accounts below:</p>
+
+      <div id="accounts-list">
+        <!-- Saved accounts will appear here -->
+      </div>
+
+      <div id="account-form-container" class="account-container">
+        <div class="form-group">
+          <label for="account-type">Account Type:</label>
+          <select id="account-type" onchange="updateAccountFields()">
+            <option value="trad-retirement">Traditional Retirement (401(k) / 403(b) / TSP / 457(b) / 401(a))</option>
+            <option value="ira-traditional">IRA (Traditional)</option>
+            <option value="ira-roth">IRA (Roth)</option>
             <option value="brokerage">Brokerage</option>
             <option value="savings">Savings</option>
             <option value="checking">Checking</option>
-            <option value="529">529 Plan</option>
           </select>
-        </td>
-        <td>
-          <select class="account-owner">
-            <option value="self">Self</option>
-            <option value="partner">Partner</option>
+        </div>
+        <div class="form-group account-owner-field hidden">
+          <label for="account-owner">Account Owner:</label>
+          <select id="account-owner">
+            <option value="self">You</option>
+            <option value="partner">Spouse</option>
           </select>
-        </td>
-        <td><input type="number" class="account-balance" value="0"></td>
-        <td><input type="number" class="account-contribution" value="0"></td>
-        <td><input type="number" class="account-return" value="5"></td>
-        <td><input type="number" class="account-match" value="0"></td>
-        <td><button onclick="removeRow(this);">Remove</button></td>
-      `;
-      table.appendChild(row);
-      // Set company match field appropriately
-      toggleCompanyMatch(row.querySelector(".account-type"));
-    }
-    
-    // Hide or enable the company match field based on account type
-    function toggleCompanyMatch(selectElem) {
-      var row = selectElem.parentElement.parentElement;
-      var matchInput = row.querySelector(".account-match");
-      if (selectElem.value === "401k") {
-        matchInput.disabled = false;
-        matchInput.style.backgroundColor = "";
-      } else {
-        matchInput.disabled = true;
-        matchInput.style.backgroundColor = "#e0e0e0";
-        matchInput.value = 0;
+        </div>
+        <div class="form-group">
+          <label for="account-balance">Current Balance ($):</label>
+          <input type="number" id="account-balance" value="10000" min="0">
+        </div>
+        <div class="form-group">
+          <label for="contribution-type">Contribution Type:</label>
+          <select id="contribution-type" onchange="toggleContributionInput()">
+            <option value="dollar">Dollar Amount</option>
+            <option value="percentage">Percentage of Salary</option>
+            <option value="max" class="max-option hidden">Maximum Allowed</option>
+          </select>
+        </div>
+        <div class="form-group" id="monthly-contribution-field">
+          <label for="account-contribution">Monthly Contribution ($):</label>
+          <input type="number" id="account-contribution" value="500" min="0">
+        </div>
+        <div class="form-group hidden" id="contribution-percentage-field">
+          <label for="contribution-percentage">Contribution (% of salary):</label>
+          <input type="number" id="contribution-percentage" value="10" min="0" max="100" step="0.1">
+        </div>
+        <div class="form-group hidden" id="max-contribution-field">
+          <label for="max-contribution-amount">Current Maximum Annual Contribution ($):</label>
+          <input type="number" id="max-contribution-amount" value="23500" min="0">
+        </div>
+        <div class="form-group">
+          <label for="account-return">Expected Annual Return (%):</label>
+          <input type="number" id="account-return" value="5" min="0" step="0.1">
+        </div>
+        <div class="form-group account-match-type-field hidden" id="match-type-field">
+          <label for="account-match-type">Company Match Type:</label>
+          <select id="account-match-type" onchange="toggleMatchInput()">
+            <option value="dollar">Dollar Amount</option>
+            <option value="percentage">Percentage of Salary</option>
+          </select>
+        </div>
+        <div class="form-group account-match-field hidden" id="match-dollar-field">
+          <label for="account-match">Annual Company Match ($):</label>
+          <input type="number" id="account-match" value="2000" min="0">
+        </div>
+        <div class="form-group account-match-field hidden" id="match-percentage-field">
+          <label for="account-match-percentage">Company Match (% of salary):</label>
+          <input type="number" id="account-match-percentage" value="3" min="0" max="100" step="0.1">
+        </div>
+        <div class="btn-container">
+          <button id="save-account-btn" class="save-btn" onclick="saveAccount()">Save Account</button>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button id="add-account-btn" class="add-btn">Add New Account</button>
+      </div>
+    </section>
+
+    <section id="goals-section" class="section">
+      <h2>Financial Goals</h2>
+      <p>Define your financial goals below:</p>
+
+      <div id="goals-list">
+        <!-- Saved goals will appear here -->
+      </div>
+
+      <div id="goal-form-container" class="goal-container hidden">
+        <div class="form-group">
+          <label for="goal-type">Goal Type:</label>
+          <select id="goal-type" onchange="updateGoalFields()">
+            <option value="retirement">Retirement</option>
+            <option value="home">Home Purchase</option>
+            <option value="education">Education</option>
+            <option value="car">Car</option>
+            <option value="vacation">Vacation</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="goal-name">Goal Name:</label>
+          <input type="text" id="goal-name" value="Retirement">
+        </div>
+        <div class="form-group">
+          <label for="goal-timing-type">Target Type:</label>
+          <select id="goal-timing-type" onchange="toggleGoalTimingFields()">
+            <option value="age">By Age</option>
+            <option value="year">By Year</option>
+          </select>
+        </div>
+        <div class="form-group" id="goal-age-field">
+          <label for="goal-age">Target Age:</label>
+          <input type="number" id="goal-age" value="65" min="0" onchange="updateRetirementGoalAmount()">
+        </div>
+        <div class="form-group hidden" id="goal-year-field">
+          <label for="goal-year">Target Year:</label>
+          <input type="number" id="goal-year" value="2050" min="2025" onchange="updateRetirementGoalAmount()">
+        </div>
+        <div class="form-group">
+          <label for="goal-amount">Target Amount ($):</label>
+          <input type="number" id="goal-amount" value="1000000" min="0">
+        </div>
+
+        <!-- Home Purchase Fields -->
+        <div class="home-fields hidden" id="home-fields">
+          <div class="form-group">
+            <label for="downpayment-type">Downpayment Type:</label>
+            <select id="downpayment-type" onchange="toggleDownpaymentInput()">
+              <option value="dollar">Dollar Amount</option>
+              <option value="percentage">Percentage</option>
+            </select>
+          </div>
+          <div class="form-group" id="downpayment-dollar-field">
+            <label for="downpayment-amount">Downpayment Amount ($):</label>
+            <input type="number" id="downpayment-amount" value="60000" min="0">
+          </div>
+          <div class="form-group hidden" id="downpayment-percentage-field">
+            <label for="downpayment-percentage">Downpayment (% of home value):</label>
+            <input type="number" id="downpayment-percentage" value="20" min="0" max="100" step="1">
+          </div>
+        </div>
+
+        <div class="btn-container">
+          <button id="save-goal-btn" class="save-btn" onclick="saveGoal()">Save Goal</button>
+          <button id="cancel-goal-btn" class="remove-btn" onclick="cancelGoalEdit()">Cancel</button>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button id="add-goal-btn" class="add-btn">Add New Goal</button>
+      </div>
+    </section>
+
+    <section id="windfalls-section" class="section">
+      <h2>Windfall Income</h2>
+      <p>Add expected one-time income such as inheritances, gifts, or bonuses:</p>
+
+      <div id="windfalls-list">
+        <!-- Saved windfalls will appear here -->
+      </div>
+
+      <div id="windfall-form-container" class="windfall-container hidden">
+        <div class="form-group">
+          <label for="windfall-type">Windfall Type:</label>
+          <select id="windfall-type" onchange="updateWindfallName()">
+            <option value="inheritance">Inheritance</option>
+            <option value="gift">Gift</option>
+            <option value="bonus">Bonus</option>
+            <option value="sale">Asset Sale</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="windfall-name">Description:</label>
+          <input type="text" id="windfall-name" value="Inheritance">
+        </div>
+        <div class="form-group">
+          <label for="windfall-amount">Amount ($):</label>
+          <input type="number" id="windfall-amount" value="50000" min="0">
+        </div>
+        <div class="form-group">
+          <label for="windfall-year">Expected Year:</label>
+          <input type="number" id="windfall-year" min="2025">
+        </div>
+        <div class="form-group">
+          <label for="windfall-savings-type">Savings Type:</label>
+          <select id="windfall-savings-type" onchange="toggleWindfallSavingsInput()">
+            <option value="dollar">Dollar Amount</option>
+            <option value="percentage">Percentage</option>
+          </select>
+        </div>
+        <div class="form-group" id="windfall-savings-dollar-field">
+          <label for="windfall-savings-amount">Amount to Save ($):</label>
+          <input type="number" id="windfall-savings-amount" value="25000" min="0">
+        </div>
+        <div class="form-group hidden" id="windfall-savings-percentage-field">
+          <label for="windfall-savings-percentage">Percentage to Save (%):</label>
+          <input type="number" id="windfall-savings-percentage" value="50" min="0" max="100" step="1">
+        </div>
+
+        <div class="btn-container">
+          <button id="save-windfall-btn" class="save-btn" onclick="saveWindfall()">Save Windfall</button>
+          <button id="cancel-windfall-btn" class="remove-btn" onclick="cancelWindfallEdit()">Cancel</button>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button id="add-windfall-btn" class="add-btn">Add Windfall</button>
+      </div>
+    </section>
+
+    <div class="btn-container">
+      <button id="generate-btn">Generate Financial Projection</button>
+      <button id="user-guide-btn" class="btn-secondary">User Guide</button>
+    </div>
+
+    <!-- User Guide Modal -->
+    <div id="user-guide-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>User Guide</h2>
+        <div class="modal-body">
+          <h3>Overview</h3>
+          <p>This financial planning tool helps you project your financial future using a savings-based budgeting approach. 
+            Instead of focusing on day-to-day spending categories, it emphasizes "paying your future self first" through systematic saving.</p>
+
+          <h3>Key Calculations</h3>
+
+          <h4>Income Projection</h4>
+          <p>Future income is calculated using the formula: <br>
+            <code>Future Income = Current Income × (1 + Annual Growth Rate)^Years</code></p>
+
+          <h4>Expense Projection</h4>
+          <p>Future expenses are calculated using the formula: <br>
+            <code>Future Expenses = Current Expenses × (1 + Expense Growth Rate)^Years</code></p>
+
+          <h4>Account Growth</h4>
+          <p>For each account, the annual growth is calculated as: <br>
+            <code>New Balance = Previous Balance × (1 + Annual Return) + Annual Contributions</code></p>
+
+          <h4>Retirement Expenses</h4>
+          <p>For retirement expenses, there are two options:</p>
+          <ul>
+            <li><strong>Based on Current Expenses:</strong> Your current expenses adjusted for inflation to retirement, then grown by inflation thereafter.</li>
+            <li><strong>Based on Safe Withdrawal Rate:</strong> In the first year of retirement, expenses are set to 
+              the Safe Withdrawal Rate (e.g., 4%) of your retirement portfolio. In subsequent years, that dollar amount increases with inflation.</li>
+          </ul>
+
+          <h4>Contributions</h4>
+          <p>Contributions can be set in three ways:</p>
+          <ul>
+            <li><strong>Dollar Amount:</strong> Fixed monthly contribution</li>
+            <li><strong>Percentage of Salary:</strong> Contribution grows as your salary grows</li>
+            <li><strong>Maximum Allowed:</strong> For retirement accounts, uses the current maximum allowed contribution 
+              and increases it by 2% per year to model IRS limit adjustments</li>
+          </ul>
+
+          <h4>Net Cash Flow</h4>
+          <p>Net Cash Flow represents what's left after all income, expenses, and savings:</p>
+          <code>Net Cash Flow = After-Tax Income + Windfalls - Living Expenses - Goals - Employee Contributions</code>
+          <p>A positive net cash flow means you have extra money to allocate. A negative net cash flow means you need to 
+            either reduce expenses or reduce savings.</p>
+
+          <h3>Checking Your Financial Plan</h3>
+          <p>The tool checks your plan against two key criteria:</p>
+          <ol>
+            <li>Will you reach your retirement savings goal by your target retirement age?</li>
+            <li>Will your savings remain positive throughout your lifetime?</li>
+          </ol>
+          <p>Your plan is fully successful if both criteria are met, partially successful if only one is met, 
+            and unsuccessful if neither is met.</p>
+
+          <h3>Social Security</h3>
+          <p>Social Security benefits are calculated based on your input and increased annually by either the general 
+            inflation rate or a custom rate you specify.</p>
+
+          <h3>Tips for Success</h3>
+          <ul>
+            <li>Start with realistic expenses and income figures</li>
+            <li>Input accurate current account balances</li>
+            <li>Be conservative with investment return estimates</li>
+            <li>Remember that employer contributions add significantly to retirement savings</li>
+            <li>Consider the impact of inflation on your long-term plans</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <section id="results-section" class="hidden">
+      <h2>Projection Results</h2>
+
+      <div id="summary-container" class="summary-box">
+        <!-- Summary information will be inserted here -->
+      </div>
+
+      <div id="result-status" class="result-status">
+        <!-- Success/failure messaging will appear here -->
+      </div>
+
+      <h3>Detailed Projection</h3>
+      <div id="projection-table">
+        <!-- Projection table will be inserted here -->
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Global variables
+    let accounts = [];
+    let goals = [];
+    let windfalls = [];
+    let projectionData = [];
+    let currentYear = new Date().getFullYear();
+    let editingAccountId = null;
+    let editingGoalId = null;
+    let editingWindfallId = null;
+
+    // DOM Elements
+    const advancedToggle = document.getElementById('advanced-toggle');
+    const advancedSection = document.getElementById('advanced-section');
+    const accountsList = document.getElementById('accounts-list');
+    const accountFormContainer = document.getElementById('account-form-container');
+    const addAccountBtn = document.getElementById('add-account-btn');
+    const goalsList = document.getElementById('goals-list');
+    const goalFormContainer = document.getElementById('goal-form-container');
+    const addGoalBtn = document.getElementById('add-goal-btn');
+    const windfallsList = document.getElementById('windfalls-list');
+    const windfallFormContainer = document.getElementById('windfall-form-container');
+    const addWindfallBtn = document.getElementById('add-windfall-btn');
+    const generateBtn = document.getElementById('generate-btn');
+    const resultsSection = document.getElementById('results-section');
+
+    // UI Toggle Functions
+    function toggleContributionInput() {
+      const contributionType = document.getElementById('contribution-type').value;
+      const monthlyContributionField = document.getElementById('monthly-contribution-field');
+      const contributionPercentageField = document.getElementById('contribution-percentage-field');
+      const maxContributionField = document.getElementById('max-contribution-field');
+
+      monthlyContributionField.classList.add('hidden');
+      contributionPercentageField.classList.add('hidden');
+      maxContributionField.classList.add('hidden');
+
+      if (contributionType === 'dollar') {
+        monthlyContributionField.classList.remove('hidden');
+      } else if (contributionType === 'percentage') {
+        contributionPercentageField.classList.remove('hidden');
+      } else if (contributionType === 'max') {
+        maxContributionField.classList.remove('hidden');
       }
     }
-    
-    // Add a new goal row dynamically
-    function addGoalRow() {
-      var table = document.getElementById("goals-body");
-      var row = document.createElement("tr");
-      row.innerHTML = `
-        <td><input type="text" class="goal-description" placeholder="e.g., Retirement, Home Purchase"></td>
-        <td><input type="text" class="goal-target" placeholder="Age or Year"></td>
-        <td><input type="number" class="goal-amount" value="0"></td>
-        <td><button onclick="removeRow(this);">Remove</button></td>
-      `;
-      table.appendChild(row);
+
+    function toggleExpenseGrowthInput() {
+      const expenseGrowthType = document.getElementById('expense-growth-type').value;
+      const customExpenseGrowthContainer = document.getElementById('custom-expense-growth-container');
+
+      if (expenseGrowthType === 'custom') {
+        customExpenseGrowthContainer.classList.remove('hidden');
+      } else {
+        customExpenseGrowthContainer.classList.add('hidden');
+      }
     }
-    
-    // Remove a row from a table (used in both Accounts and Goals)
-    function removeRow(button) {
-      var row = button.parentElement.parentElement;
-      row.parentElement.removeChild(row);
+
+    function toggleSSIncreaseInput() {
+      const ssIncreaseType = document.getElementById('ss-increase-type').value;
+      const customSSIncreaseContainer = document.getElementById('custom-ss-increase-container');
+
+      if (ssIncreaseType === 'custom') {
+        customSSIncreaseContainer.classList.remove('hidden');
+      } else {
+        customSSIncreaseContainer.classList.add('hidden');
+      }
     }
-    
-    // Generate the financial projection
-    function generateProjection() {
-      // Read basic user inputs
-      var birthday = new Date(document.getElementById("birthday").value);
-      var maritalStatus = document.getElementById("marital-status").value;
-      var standardDeduction = parseFloat(document.getElementById("standard-deduction").value);
-      
-      var currentIncome = parseFloat(document.getElementById("current-income").value);
-      var incomeGrowth = parseFloat(document.getElementById("income-growth").value) / 100;
-      var currentExpenses = parseFloat(document.getElementById("current-expenses").value);
-      var expenseGrowth = parseFloat(document.getElementById("expense-growth").value) / 100;
-      
-      var inflationRate = parseFloat(document.getElementById("inflation-rate").value) / 100;
-      var defaultReturn = parseFloat(document.getElementById("default-return").value) / 100;
-      var taxDeductionGrowth = parseFloat(document.getElementById("tax-deduction-growth").value) / 100;
-      
-      // Determine the user's current age
-      var today = new Date();
-      var age = today.getFullYear() - birthday.getFullYear();
-      if(today.getMonth() < birthday.getMonth() || 
-         (today.getMonth() === birthday.getMonth() && today.getDate() < birthday.getDate())){
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set up event listeners
+      advancedToggle.addEventListener('click', toggleAdvancedSection);
+      addAccountBtn.addEventListener('click', showAccountForm);
+      addGoalBtn.addEventListener('click', showGoalForm);
+      addWindfallBtn.addEventListener('click', showWindfallForm);
+      generateBtn.addEventListener('click', generateProjection);
+
+      // User Guide button
+      const userGuideBtn = document.getElementById('user-guide-btn');
+      const userGuideModal = document.getElementById('user-guide-modal');
+      const closeModal = userGuideModal.querySelector('.close');
+
+      userGuideBtn.addEventListener('click', function () {
+        userGuideModal.style.display = 'block';
+      });
+
+      closeModal.addEventListener('click', function () {
+        userGuideModal.style.display = 'none';
+      });
+
+      window.addEventListener('click', function (event) {
+        if (event.target === userGuideModal) {
+          userGuideModal.style.display = 'none';
+        }
+      });
+
+      // Set today as the default date for birthday
+      const birthdayInput = document.getElementById('birthday');
+      const today = new Date();
+      const defaultDate = new Date(today.getFullYear() - 30, today.getMonth(), today.getDate());
+      birthdayInput.valueAsDate = defaultDate;
+
+      // Set default windfall year
+      document.getElementById('windfall-year').value = currentYear + 5;
+
+      // Update marital status display
+      document.getElementById('marital-status').addEventListener('change', function () {
+        updateMaritalStatusDisplay();
+        updateStandardDeduction();
+      });
+
+      // Setup expense growth type toggle
+      document.getElementById('expense-growth-type').addEventListener('change', toggleExpenseGrowthInput);
+
+      // Setup SS increase type toggle
+      document.getElementById('ss-increase-type').addEventListener('change', toggleSSIncreaseInput);
+
+      // Setup retirement goal calculation
+      document.getElementById('current-expenses').addEventListener('change', updateRetirementGoalAmount);
+      document.getElementById('birthday').addEventListener('change', updateRetirementGoalAmount);
+      document.getElementById('inflation-rate').addEventListener('change', updateRetirementGoalAmount);
+
+      // Set up name change listeners
+      const userName = document.getElementById('user-name');
+      const spouseName = document.getElementById('spouse-name');
+
+      if (userName && spouseName) {
+        userName.addEventListener('input', function () {
+          updateAccountOwnerOptions();
+          updateIncomeLabels();
+          updateSSLabels();
+        });
+
+        spouseName.addEventListener('input', function () {
+          updateAccountOwnerOptions();
+          updateIncomeLabels();
+          updateSSLabels();
+        });
+      }
+
+      // Add event listeners for custom name tracking on goal form
+      const goalNameField = document.getElementById('goal-name');
+      if (goalNameField) {
+        goalNameField.addEventListener('input', function () {
+          this.dataset.userEdited = 'true';
+        });
+      }
+
+      // Add event listener for goal amount tracking
+      const goalAmountField = document.getElementById('goal-amount');
+      if (goalAmountField) {
+        goalAmountField.addEventListener('input', function () {
+          this.dataset.userEdited = 'true';
+        });
+      }
+
+      // Add event listener for custom windfall name tracking
+      const windfallNameField = document.getElementById('windfall-name');
+      if (windfallNameField) {
+        windfallNameField.addEventListener('input', function () {
+          this.dataset.userEdited = 'true';
+        });
+      }
+
+      // Initialize displays
+      updateMaritalStatusDisplay();
+      updateStandardDeduction();
+      toggleExpenseGrowthInput();
+      toggleSSIncreaseInput();
+      updateAccountFields();
+    });
+
+    // UI Functions
+    function toggleAdvancedSection() {
+      advancedSection.classList.toggle('hidden');
+      const button = advancedToggle.querySelector('button');
+      const span = advancedToggle.querySelector('span');
+
+      if (advancedSection.classList.contains('hidden')) {
+        button.textContent = 'Advanced Settings';
+        span.textContent = 'Show global settings and assumptions';
+      } else {
+        button.textContent = 'Hide Advanced Settings';
+        span.textContent = 'Hide global settings and assumptions';
+      }
+    }
+
+    function updateMaritalStatusDisplay() {
+      const maritalStatus = document.getElementById('marital-status').value;
+      const nameFieldsContainer = document.getElementById('name-fields-container');
+      const singleIncomeContainer = document.getElementById('single-income-container');
+      const dualIncomeContainer = document.getElementById('dual-income-container');
+      const singleSSContainer = document.getElementById('single-ss-container');
+      const dualSSContainer = document.getElementById('dual-ss-container');
+      const ownershipFields = document.querySelectorAll('.account-owner-field');
+
+      if (maritalStatus === 'married') {
+        nameFieldsContainer.classList.remove('hidden');
+        singleIncomeContainer.classList.add('hidden');
+        dualIncomeContainer.classList.remove('hidden');
+        singleSSContainer.classList.add('hidden');
+        dualSSContainer.classList.remove('hidden');
+        ownershipFields.forEach(field => field.classList.remove('hidden'));
+
+        // Update account owner options
+        updateAccountOwnerOptions();
+        updateIncomeLabels();
+        updateSSLabels();
+      } else {
+        nameFieldsContainer.classList.add('hidden');
+        singleIncomeContainer.classList.remove('hidden');
+        dualIncomeContainer.classList.add('hidden');
+        singleSSContainer.classList.remove('hidden');
+        dualSSContainer.classList.add('hidden');
+        ownershipFields.forEach(field => field.classList.add('hidden'));
+      }
+    }
+
+    function updateStandardDeduction() {
+      const maritalStatus = document.getElementById('marital-status').value;
+      const stdDeductionField = document.getElementById('std-deduction');
+
+      if (maritalStatus === 'married') {
+        stdDeductionField.value = 29200; // 2024 standard deduction for married filing jointly
+      } else {
+        stdDeductionField.value = 14600; // 2024 standard deduction for single filers
+      }
+    }
+
+    function updateAccountOwnerOptions() {
+      const userName = document.getElementById('user-name').value || 'You';
+      const spouseName = document.getElementById('spouse-name').value || 'Spouse';
+      const ownerDropdowns = document.querySelectorAll('[id^="account-owner"]');
+
+      ownerDropdowns.forEach(dropdown => {
+        const selectedValue = dropdown.value;
+        dropdown.innerHTML = `
+                    <option value="self">${userName}</option>
+                    <option value="partner">${spouseName}</option>
+                `;
+        dropdown.value = selectedValue;
+      });
+    }
+
+    function updateIncomeLabels() {
+      const userName = document.getElementById('user-name').value || 'Your';
+      const spouseName = document.getElementById('spouse-name').value || "Spouse's";
+
+      document.getElementById('income-label-self').textContent = `${userName}'s Annual Income ($):`;
+      document.getElementById('income-label-spouse').textContent = `${spouseName}'s Annual Income ($):`;
+      document.getElementById('income-label-self-after-tax').textContent = `${userName}'s Annual Income After-Tax ($):`;
+      document.getElementById('income-label-spouse-after-tax').textContent = `${spouseName}'s Annual Income After-Tax ($):`;
+    }
+
+    function updateSSLabels() {
+      const userName = document.getElementById('user-name').value || 'Your';
+      const spouseName = document.getElementById('spouse-name').value || "Spouse's";
+
+      document.getElementById('ss-label-self').textContent = `${userName}'s Monthly Social Security Benefit ($):`;
+      document.getElementById('ss-label-spouse').textContent = `${spouseName}'s Monthly Social Security Benefit ($):`;
+      document.getElementById('ss-start-age-label-self').textContent = `${userName}'s Start Age:`;
+      document.getElementById('ss-start-age-label-spouse').textContent = `${spouseName}'s Start Age:`;
+    }
+
+    function updateRetirementGoalAmount() {
+      const goalType = document.getElementById('goal-type')?.value;
+      const timingType = document.getElementById('goal-timing-type')?.value;
+      const goalAmountField = document.getElementById('goal-amount');
+
+      if (goalType !== 'retirement' || !goalAmountField) {
+        return;
+      }
+
+      const currentExpenses = parseFloat(document.getElementById('current-expenses').value);
+      const inflationRate = parseFloat(document.getElementById('inflation-rate').value) / 100;
+      const birthdayValue = document.getElementById('birthday').value;
+
+      if (!birthdayValue || isNaN(currentExpenses) || isNaN(inflationRate)) {
+        return;
+      }
+
+      const currentAge = calculateAge(new Date(birthdayValue));
+      let targetAge;
+
+      if (timingType === 'age') {
+        targetAge = parseInt(document.getElementById('goal-age').value);
+      } else {
+        const targetYear = parseInt(document.getElementById('goal-year').value);
+        targetAge = currentAge + (targetYear - currentYear);
+      }
+
+      const yearsToRetirement = targetAge - currentAge;
+
+      // Calculate future expenses adjusted for inflation
+      const futureExpenses = currentExpenses * Math.pow(1 + inflationRate, yearsToRetirement);
+
+      // Set target amount to 25x future expenses
+      const targetAmount = futureExpenses * 25;
+      goalAmountField.value = Math.round(targetAmount);
+
+      if (editingGoalId !== null) {
+        const goalIndex = goals.findIndex(g => g.id === editingGoalId);
+        if (goalIndex >= 0 && goals[goalIndex].type === 'retirement') {
+          goals[goalIndex].targetAmount = Math.round(targetAmount);
+          updateGoalsList();
+        }
+      }
+    }
+
+    function showAccountForm() {
+      document.getElementById('account-type').value = 'trad-retirement';
+      document.getElementById('account-balance').value = '10000';
+      document.getElementById('account-contribution').value = '500';
+      document.getElementById('account-return').value = '5';
+
+      if (document.getElementById('account-match')) {
+        document.getElementById('account-match').value = '2000';
+      }
+      if (document.getElementById('account-match-percentage')) {
+        document.getElementById('account-match-percentage').value = '3';
+      }
+
+      document.getElementById('save-account-btn').textContent = 'Save Account';
+      editingAccountId = null;
+
+      updateAccountFields();
+
+      accountFormContainer.classList.remove('hidden');
+      addAccountBtn.classList.add('hidden');
+    }
+
+    function showGoalForm() {
+      document.getElementById('goal-type').value = 'retirement';
+      document.getElementById('goal-name').value = 'Retirement';
+      document.getElementById('goal-timing-type').value = 'age';
+      document.getElementById('goal-age').value = '65';
+      document.getElementById('goal-year').value = currentYear + 35;
+
+      if (document.getElementById('goal-type').value === 'retirement') {
+        updateRetirementGoalAmount();
+      } else {
+        document.getElementById('goal-amount').value = '0';
+      }
+
+      document.getElementById('save-goal-btn').textContent = 'Save Goal';
+      editingGoalId = null;
+
+      updateGoalFields();
+      toggleGoalTimingFields();
+
+      goalFormContainer.classList.remove('hidden');
+      addGoalBtn.classList.add('hidden');
+    }
+
+    function showWindfallForm() {
+      document.getElementById('windfall-type').value = 'inheritance';
+      document.getElementById('windfall-name').value = 'Inheritance';
+      document.getElementById('windfall-amount').value = '50000';
+      document.getElementById('windfall-year').value = currentYear + 5;
+      document.getElementById('windfall-savings-type').value = 'dollar';
+      document.getElementById('windfall-savings-amount').value = '25000';
+      document.getElementById('windfall-savings-percentage').value = '50';
+
+      document.getElementById('save-windfall-btn').textContent = 'Save Windfall';
+      editingWindfallId = null;
+
+      toggleWindfallSavingsInput();
+
+      windfallFormContainer.classList.remove('hidden');
+      addWindfallBtn.classList.add('hidden');
+    }
+
+    function updateAccountFields() {
+      const accountType = document.getElementById('account-type').value;
+      const matchTypeField = document.getElementById('match-type-field');
+      const matchDollarField = document.getElementById('match-dollar-field');
+      const matchPercentageField = document.getElementById('match-percentage-field');
+
+      if (accountType === 'trad-retirement') {
+        matchTypeField.classList.remove('hidden');
+        matchDollarField.classList.remove('hidden');
+        matchPercentageField.classList.add('hidden');
+      } else {
+        matchTypeField.classList.add('hidden');
+        matchDollarField.classList.add('hidden');
+        matchPercentageField.classList.add('hidden');
+      }
+    }
+
+    function toggleMatchInput() {
+      const matchType = document.getElementById('account-match-type').value;
+      const dollarField = document.getElementById('match-dollar-field');
+      const percentageField = document.getElementById('match-percentage-field');
+
+      if (matchType === 'dollar') {
+        dollarField.classList.remove('hidden');
+        percentageField.classList.add('hidden');
+      } else {
+        dollarField.classList.add('hidden');
+        percentageField.classList.remove('hidden');
+      }
+    }
+
+    function updateGoalFields() {
+      const goalType = document.getElementById('goal-type').value;
+      const goalNameField = document.getElementById('goal-name');
+      const homeFields = document.getElementById('home-fields');
+
+      if (!goalNameField.dataset.userEdited) {
+        switch (goalType) {
+          case 'retirement':
+            goalNameField.value = 'Retirement';
+            break;
+          case 'home':
+            goalNameField.value = 'Home Purchase';
+            break;
+          case 'education':
+            goalNameField.value = 'Education Fund';
+            break;
+          case 'car':
+            goalNameField.value = 'Car Purchase';
+            break;
+          case 'vacation':
+            goalNameField.value = 'Vacation';
+            break;
+          case 'other':
+            goalNameField.value = 'Other Goal';
+            break;
+        }
+      }
+
+      const goalAmountField = document.getElementById('goal-amount');
+      if (!goalAmountField.dataset.userEdited) {
+        if (goalType === 'retirement') {
+          updateRetirementGoalAmount();
+        } else {
+          goalAmountField.value = '0';
+        }
+      }
+
+      if (goalType === 'home') {
+        homeFields.classList.remove('hidden');
+        toggleDownpaymentInput();
+      } else {
+        homeFields.classList.add('hidden');
+      }
+    }
+
+    function toggleGoalTimingFields() {
+      const timingType = document.getElementById('goal-timing-type').value;
+      const ageField = document.getElementById('goal-age-field');
+      const yearField = document.getElementById('goal-year-field');
+
+      if (timingType === 'age') {
+        ageField.classList.remove('hidden');
+        yearField.classList.add('hidden');
+      } else {
+        ageField.classList.add('hidden');
+        yearField.classList.remove('hidden');
+      }
+
+      updateRetirementGoalAmount();
+    }
+
+    function toggleDownpaymentInput() {
+      const downpaymentType = document.getElementById('downpayment-type').value;
+      const dollarField = document.getElementById('downpayment-dollar-field');
+      const percentageField = document.getElementById('downpayment-percentage-field');
+
+      if (downpaymentType === 'dollar') {
+        dollarField.classList.remove('hidden');
+        percentageField.classList.add('hidden');
+      } else {
+        dollarField.classList.add('hidden');
+        percentageField.classList.remove('hidden');
+      }
+    }
+
+    function updateWindfallName() {
+      const windfallType = document.getElementById('windfall-type').value;
+      const windfallNameField = document.getElementById('windfall-name');
+
+      if (!windfallNameField.dataset.userEdited) {
+        switch (windfallType) {
+          case 'inheritance':
+            windfallNameField.value = 'Inheritance';
+            break;
+          case 'gift':
+            windfallNameField.value = 'Gift';
+            break;
+          case 'bonus':
+            windfallNameField.value = 'Bonus';
+            break;
+          case 'sale':
+            windfallNameField.value = 'Asset Sale';
+            break;
+          case 'other':
+            windfallNameField.value = 'Other Windfall';
+            break;
+        }
+      }
+    }
+
+    function toggleWindfallSavingsInput() {
+      const savingsType = document.getElementById('windfall-savings-type').value;
+      const dollarField = document.getElementById('windfall-savings-dollar-field');
+      const percentageField = document.getElementById('windfall-savings-percentage-field');
+
+      if (savingsType === 'dollar') {
+        dollarField.classList.remove('hidden');
+        percentageField.classList.add('hidden');
+      } else {
+        dollarField.classList.add('hidden');
+        percentageField.classList.remove('hidden');
+      }
+    }
+
+    // Account Management
+    function saveAccount() {
+      const accountType = document.getElementById('account-type').value;
+      const accountBalance = parseFloat(document.getElementById('account-balance').value);
+
+      const contributionType = document.getElementById('contribution-type').value;
+      let monthlyContribution = 0;
+      let contributionPercentage = 0;
+      let maxContribution = 0;
+
+      if (contributionType === 'dollar') {
+        monthlyContribution = parseFloat(document.getElementById('account-contribution').value);
+      } else if (contributionType === 'percentage') {
+        contributionPercentage = parseFloat(document.getElementById('contribution-percentage').value) / 100;
+      } else if (contributionType === 'max') {
+        maxContribution = parseFloat(document.getElementById('max-contribution-amount').value);
+      }
+
+      const annualReturn = parseFloat(document.getElementById('account-return').value) / 100;
+
+      let companyMatch = 0;
+      let matchType = 'dollar';
+
+      if (accountType === 'trad-retirement') {
+        matchType = document.getElementById('account-match-type').value;
+
+        if (matchType === 'dollar') {
+          companyMatch = parseFloat(document.getElementById('account-match').value) || 0;
+        } else {
+          companyMatch = parseFloat(document.getElementById('account-match-percentage').value) || 0;
+        }
+      }
+
+      const account = {
+        id: editingAccountId || Date.now(),
+        type: accountType,
+        owner: document.getElementById('marital-status').value === 'married' ? document.getElementById('account-owner').value : 'self',
+        balance: accountBalance,
+        contributionType: contributionType,
+        monthlyContribution: monthlyContribution,
+        contributionPercentage: contributionPercentage,
+        maxContribution: maxContribution,
+        annualReturn: annualReturn,
+        companyMatch: companyMatch,
+        matchType: matchType
+      };
+
+      if (editingAccountId) {
+        const index = accounts.findIndex(a => a.id === editingAccountId);
+        if (index !== -1) {
+          accounts[index] = account;
+        }
+        editingAccountId = null;
+      } else {
+        accounts.push(account);
+      }
+
+      accountFormContainer.classList.add('hidden');
+      addAccountBtn.classList.remove('hidden');
+
+      updateAccountsList();
+    }
+
+    function editAccount(accountId) {
+      const account = accounts.find(a => a.id === accountId);
+      if (!account) return;
+
+      document.getElementById('account-type').value = account.type;
+      document.getElementById('account-balance').value = account.balance;
+
+      document.getElementById('contribution-type').value = account.contributionType || 'dollar';
+      if (account.contributionType === 'dollar') {
+        document.getElementById('account-contribution').value = account.monthlyContribution;
+      } else if (account.contributionType === 'percentage') {
+        document.getElementById('contribution-percentage').value = account.contributionPercentage * 100;
+      } else if (account.contributionType === 'max') {
+        document.getElementById('max-contribution-amount').value = account.maxContribution;
+      }
+
+      document.getElementById('account-return').value = account.annualReturn * 100;
+
+      if (document.getElementById('account-owner')) {
+        document.getElementById('account-owner').value = account.owner;
+      }
+
+      if (account.type === 'trad-retirement') {
+        document.getElementById('account-match-type').value = account.matchType || 'dollar';
+
+        if (account.matchType === 'dollar' || !account.matchType) {
+          document.getElementById('account-match').value = account.companyMatch;
+        } else {
+          document.getElementById('account-match-percentage').value = account.companyMatch;
+        }
+      }
+
+      updateAccountFields();
+      toggleMatchInput();
+      toggleContributionInput();
+
+      editingAccountId = accountId;
+      document.getElementById('save-account-btn').textContent = 'Update Account';
+
+      accountFormContainer.classList.remove('hidden');
+      addAccountBtn.classList.add('hidden');
+    }
+
+    function deleteAccount(accountId) {
+      if (confirm('Are you sure you want to delete this account?')) {
+        accounts = accounts.filter(a => a.id !== accountId);
+        updateAccountsList();
+      }
+    }
+
+    function updateAccountsList() {
+      accountsList.innerHTML = '';
+
+      accounts.forEach(account => {
+        const typeLabels = {
+          'trad-retirement': 'Traditional Retirement',
+          'ira-traditional': 'Traditional IRA',
+          'ira-roth': 'Roth IRA',
+          'brokerage': 'Brokerage',
+          'savings': 'Savings',
+          'checking': 'Checking'
+        };
+
+        const ownerName = account.owner === 'self'
+          ? (document.getElementById('user-name').value || 'You')
+          : (document.getElementById('spouse-name').value || 'Spouse');
+
+        let contributionInfo = '';
+        if (account.contributionType === 'dollar') {
+          contributionInfo = `<p><strong>Monthly Contribution:</strong> ${formatCurrency(account.monthlyContribution)}</p>`;
+        } else if (account.contributionType === 'percentage') {
+          contributionInfo = `<p><strong>Contribution:</strong> ${(account.contributionPercentage * 100).toFixed(1)}% of salary</p>`;
+        } else if (account.contributionType === 'max') {
+          contributionInfo = `<p><strong>Contribution:</strong> Maximum Allowed (${formatCurrency(account.maxContribution)})</p>`;
+        }
+
+        let matchInfo = '';
+        if (account.type === 'trad-retirement') {
+          if (account.matchType === 'percentage') {
+            matchInfo = `<p><strong>Company Match:</strong> ${account.companyMatch}% of salary</p>`;
+          } else {
+            matchInfo = `<p><strong>Company Match:</strong> ${formatCurrency(account.companyMatch)}/year</p>`;
+          }
+        }
+
+        const accountItem = document.createElement('div');
+        accountItem.className = 'account-item';
+        accountItem.innerHTML = `
+                    <div class="display-info">
+                        <h3>${typeLabels[account.type]}</h3>
+                        <p><strong>Owner:</strong> ${ownerName}</p>
+                        <p><strong>Current Balance:</strong> ${formatCurrency(account.balance)}</p>
+                        ${contributionInfo}
+                        <p><strong>Expected Annual Return:</strong> ${(account.annualReturn * 100).toFixed(1)}%</p>
+                        ${matchInfo}
+                    </div>
+                    <div class="btn-container">
+                        <button class="edit-btn" onclick="editAccount(${account.id})">Edit</button>
+                        <button class="remove-btn" onclick="deleteAccount(${account.id})">Delete</button>
+                    </div>
+                `;
+
+        accountsList.appendChild(accountItem);
+      });
+    }
+
+    // Goal Management
+    function saveGoal() {
+      const goalType = document.getElementById('goal-type').value;
+      const goalName = document.getElementById('goal-name').value;
+      const goalTimingType = document.getElementById('goal-timing-type').value;
+      let targetAge, targetYear;
+
+      if (goalTimingType === 'age') {
+        targetAge = parseInt(document.getElementById('goal-age').value);
+        const currentAge = calculateAge(new Date(document.getElementById('birthday').value));
+        targetYear = currentYear + (targetAge - currentAge);
+      } else {
+        targetYear = parseInt(document.getElementById('goal-year').value);
+        const currentAge = calculateAge(new Date(document.getElementById('birthday').value));
+        targetAge = currentAge + (targetYear - currentYear);
+      }
+
+      const targetAmount = parseFloat(document.getElementById('goal-amount').value);
+
+      const goal = {
+        id: editingGoalId || Date.now(),
+        type: goalType,
+        name: goalName,
+        timingType: goalTimingType,
+        targetAge: targetAge,
+        targetYear: targetYear,
+        targetAmount: targetAmount
+      };
+
+      if (goalType === 'home') {
+        const downpaymentType = document.getElementById('downpayment-type').value;
+
+        if (downpaymentType === 'dollar') {
+          goal.downpaymentAmount = parseFloat(document.getElementById('downpayment-amount').value);
+          goal.downpaymentPercentage = null;
+        } else {
+          goal.downpaymentPercentage = parseFloat(document.getElementById('downpayment-percentage').value) / 100;
+          goal.downpaymentAmount = goal.targetAmount * goal.downpaymentPercentage;
+        }
+      }
+
+      if (editingGoalId) {
+        const index = goals.findIndex(g => g.id === editingGoalId);
+        if (index !== -1) {
+          goals[index] = goal;
+        }
+        editingGoalId = null;
+      } else {
+        goals.push(goal);
+      }
+
+      cancelGoalEdit();
+      updateGoalsList();
+    }
+
+    function editGoal(goalId) {
+      const goal = goals.find(g => g.id === goalId);
+      if (!goal) return;
+
+      document.getElementById('goal-type').value = goal.type;
+      document.getElementById('goal-name').value = goal.name;
+      document.getElementById('goal-timing-type').value = goal.timingType || 'age';
+      document.getElementById('goal-age').value = goal.targetAge;
+      document.getElementById('goal-year').value = goal.targetYear || currentYear + (goal.targetAge - calculateAge(new Date(document.getElementById('birthday').value)));
+      document.getElementById('goal-amount').value = goal.targetAmount;
+
+      if (goal.type === 'home') {
+        if (goal.downpaymentPercentage) {
+          document.getElementById('downpayment-type').value = 'percentage';
+          document.getElementById('downpayment-percentage').value = goal.downpaymentPercentage * 100;
+        } else {
+          document.getElementById('downpayment-type').value = 'dollar';
+          document.getElementById('downpayment-amount').value = goal.downpaymentAmount;
+        }
+      }
+
+      updateGoalFields();
+      toggleGoalTimingFields();
+
+      editingGoalId = goalId;
+      document.getElementById('save-goal-btn').textContent = 'Update Goal';
+
+      goalFormContainer.classList.remove('hidden');
+      addGoalBtn.classList.add('hidden');
+    }
+
+    function deleteGoal(goalId) {
+      if (confirm('Are you sure you want to delete this goal?')) {
+        goals = goals.filter(g => g.id !== goalId);
+        updateGoalsList();
+      }
+    }
+
+    function cancelGoalEdit() {
+      goalFormContainer.classList.add('hidden');
+      addGoalBtn.classList.remove('hidden');
+      editingGoalId = null;
+    }
+
+    function updateGoalsList() {
+      goalsList.innerHTML = '';
+
+      goals.forEach(goal => {
+        const goalItem = document.createElement('div');
+        goalItem.className = 'goal-item';
+
+        let timingInfo = '';
+        if (goal.timingType === 'year' || !goal.timingType) {
+          timingInfo = `<p><strong>Target Year:</strong> ${goal.targetYear}</p>`;
+        } else {
+          timingInfo = `<p><strong>Target Age:</strong> ${goal.targetAge}</p>`;
+        }
+
+        let homeInfo = '';
+        if (goal.type === 'home') {
+          if (goal.downpaymentPercentage) {
+            homeInfo = `
+                            <p><strong>Downpayment:</strong> ${(goal.downpaymentPercentage * 100).toFixed(0)}% 
+                            ($${formatCurrency(goal.downpaymentAmount)})</p>
+                        `;
+          } else {
+            homeInfo = `<p><strong>Downpayment:</strong> $${formatCurrency(goal.downpaymentAmount)}</p>`;
+          }
+        }
+
+        goalItem.innerHTML = `
+                    <div class="display-info">
+                        <h3>${goal.name}</h3>
+                        <p><strong>Type:</strong> ${goal.type.charAt(0).toUpperCase() + goal.type.slice(1)}</p>
+                        ${timingInfo}
+                        <p><strong>Target Amount:</strong> $${formatCurrency(goal.targetAmount)}</p>
+                        ${homeInfo}
+                    </div>
+                    <div class="btn-container">
+                        <button class="edit-btn" onclick="editGoal(${goal.id})">Edit</button>
+                        <button class="remove-btn" onclick="deleteGoal(${goal.id})">Delete</button>
+                    </div>
+                `;
+
+        goalsList.appendChild(goalItem);
+      });
+    }
+
+    // Windfall Management
+    function saveWindfall() {
+      const windfallType = document.getElementById('windfall-type').value;
+      const windfallName = document.getElementById('windfall-name').value;
+      const windfallAmount = parseFloat(document.getElementById('windfall-amount').value);
+      const windfallYear = parseInt(document.getElementById('windfall-year').value);
+      const savingsType = document.getElementById('windfall-savings-type').value;
+
+      let savingsAmount;
+
+      if (savingsType === 'dollar') {
+        savingsAmount = parseFloat(document.getElementById('windfall-savings-amount').value);
+      } else {
+        const savingsPercentage = parseFloat(document.getElementById('windfall-savings-percentage').value) / 100;
+        savingsAmount = windfallAmount * savingsPercentage;
+      }
+
+      const windfall = {
+        id: editingWindfallId || Date.now(),
+        type: windfallType,
+        name: windfallName,
+        amount: windfallAmount,
+        year: windfallYear,
+        savingsType: savingsType,
+        savingsAmount: savingsAmount,
+        savingsPercentage: savingsType === 'percentage' ? parseFloat(document.getElementById('windfall-savings-percentage').value) : null
+      };
+
+      if (editingWindfallId) {
+        const index = windfalls.findIndex(w => w.id === editingWindfallId);
+        if (index !== -1) {
+          windfalls[index] = windfall;
+        }
+        editingWindfallId = null;
+      } else {
+        windfalls.push(windfall);
+      }
+
+      cancelWindfallEdit();
+      updateWindfallsList();
+    }
+
+    function editWindfall(windfallId) {
+      const windfall = windfalls.find(w => w.id === windfallId);
+      if (!windfall) return;
+
+      document.getElementById('windfall-type').value = windfall.type;
+      document.getElementById('windfall-name').value = windfall.name;
+      document.getElementById('windfall-amount').value = windfall.amount;
+      document.getElementById('windfall-year').value = windfall.year;
+      document.getElementById('windfall-savings-type').value = windfall.savingsType || 'dollar';
+
+      if (windfall.savingsType === 'percentage') {
+        document.getElementById('windfall-savings-percentage').value = windfall.savingsPercentage;
+      } else {
+        document.getElementById('windfall-savings-amount').value = windfall.savingsAmount;
+      }
+
+      toggleWindfallSavingsInput();
+
+      editingWindfallId = windfallId;
+      document.getElementById('save-windfall-btn').textContent = 'Update Windfall';
+
+      windfallFormContainer.classList.remove('hidden');
+      addWindfallBtn.classList.add('hidden');
+    }
+
+    function deleteWindfall(windfallId) {
+      if (confirm('Are you sure you want to delete this windfall?')) {
+        windfalls = windfalls.filter(w => w.id !== windfallId);
+        updateWindfallsList();
+      }
+    }
+
+    function cancelWindfallEdit() {
+      windfallFormContainer.classList.add('hidden');
+      addWindfallBtn.classList.remove('hidden');
+      editingWindfallId = null;
+    }
+
+    function updateWindfallsList() {
+      windfallsList.innerHTML = '';
+
+      windfalls.forEach(windfall => {
+        const windfallItem = document.createElement('div');
+        windfallItem.className = 'windfall-item';
+
+        let savingsInfo = '';
+        if (windfall.savingsType === 'percentage') {
+          savingsInfo = `
+                        <p><strong>Amount to Save:</strong> ${windfall.savingsPercentage}% 
+                        ($${formatCurrency(windfall.savingsAmount)})</p>
+                    `;
+        } else {
+          savingsInfo = `<p><strong>Amount to Save:</strong> $${formatCurrency(windfall.savingsAmount)}</p>`;
+        }
+
+        windfallItem.innerHTML = `
+                    <div class="display-info">
+                        <h3>${windfall.name}</h3>
+                        <p><strong>Type:</strong> ${windfall.type.charAt(0).toUpperCase() + windfall.type.slice(1)}</p>
+                        <p><strong>Amount:</strong> $${formatCurrency(windfall.amount)}</p>
+                        <p><strong>Expected Year:</strong> ${windfall.year}</p>
+                        ${savingsInfo}
+                    </div>
+                    <div class="btn-container">
+                        <button class="edit-btn" onclick="editWindfall(${windfall.id})">Edit</button>
+                        <button class="remove-btn" onclick="deleteWindfall(${windfall.id})">Delete</button>
+                    </div>
+                `;
+
+        windfallsList.appendChild(windfallItem);
+      });
+    }
+
+    // Data Collection Functions
+    function collectUserData() {
+      const birthdayValue = document.getElementById('birthday').value;
+      const birthday = new Date(birthdayValue);
+      const age = calculateAge(birthday);
+      const maritalStatus = document.getElementById('marital-status').value;
+      const stdDeduction = parseFloat(document.getElementById('std-deduction').value);
+      const userName = document.getElementById('user-name').value || 'You';
+      const spouseName = document.getElementById('spouse-name').value || 'Spouse';
+
+      let currentIncome, incomeSelf, incomeSpouse, afterTaxIncomeSelf, afterTaxIncomeSpouse;
+
+      if (maritalStatus === 'married') {
+        incomeSelf = parseFloat(document.getElementById('current-income-self').value);
+        incomeSpouse = parseFloat(document.getElementById('current-income-spouse').value);
+        afterTaxIncomeSelf = parseFloat(document.getElementById('current-income-self-after-tax').value);
+        afterTaxIncomeSpouse = parseFloat(document.getElementById('current-income-spouse-after-tax').value);
+        currentIncome = incomeSelf + incomeSpouse;
+      } else {
+        currentIncome = parseFloat(document.getElementById('current-income').value);
+        afterTaxIncomeSelf = parseFloat(document.getElementById('current-income-after-tax').value);
+        incomeSelf = currentIncome;
+        incomeSpouse = 0;
+        afterTaxIncomeSpouse = 0;
+      }
+
+      const totalAfterTaxIncome = afterTaxIncomeSelf + afterTaxIncomeSpouse;
+
+      let ssSelf, ssSpouse, ssStartAgeSelf, ssStartAgeSpouse;
+
+      try {
+        if (maritalStatus === 'married') {
+          ssSelf = parseFloat(document.getElementById('ss-amount-self').value) * 12;
+          ssSpouse = parseFloat(document.getElementById('ss-amount-spouse').value) * 12;
+          ssStartAgeSelf = parseInt(document.getElementById('ss-start-age-self').value);
+          ssStartAgeSpouse = parseInt(document.getElementById('ss-start-age-spouse').value);
+        } else {
+          ssSelf = parseFloat(document.getElementById('ss-amount').value || 0) * 12;
+          ssSpouse = 0;
+          ssStartAgeSelf = parseInt(document.getElementById('ss-start-age').value || 67);
+          ssStartAgeSpouse = 0;
+        }
+      } catch (e) {
+        console.error("Error collecting Social Security data:", e);
+        ssSelf = 24000;
+        ssSpouse = 0;
+        ssStartAgeSelf = 67;
+        ssStartAgeSpouse = 0;
+      }
+
+      let ssIncreaseRate;
+      const ssIncreaseType = document.getElementById('ss-increase-type').value;
+      if (ssIncreaseType === 'inflation') {
+        ssIncreaseRate = parseFloat(document.getElementById('inflation-rate').value) / 100;
+      } else {
+        ssIncreaseRate = parseFloat(document.getElementById('ss-increase-rate').value || 2.0) / 100;
+      }
+
+      const incomeGrowth = parseFloat(document.getElementById('income-growth').value) / 100;
+      const currentExpenses = parseFloat(document.getElementById('current-expenses').value);
+
+      let expenseGrowth;
+      const expenseGrowthType = document.getElementById('expense-growth-type').value;
+      if (expenseGrowthType === 'inflation') {
+        expenseGrowth = parseFloat(document.getElementById('inflation-rate').value) / 100;
+      } else {
+        expenseGrowth = parseFloat(document.getElementById('expense-growth').value || 2.5) / 100;
+      }
+
+      const retirementExpenseType = document.getElementById('retirement-expense-type').value;
+
+      const inflationRate = parseFloat(document.getElementById('inflation-rate').value) / 100;
+      const educationInflation = parseFloat(document.getElementById('education-inflation').value) / 100;
+      const healthcareInflation = parseFloat(document.getElementById('healthcare-inflation').value) / 100;
+      const defaultReturn = parseFloat(document.getElementById('default-return').value) / 100;
+      const taxIncreaseRate = parseFloat(document.getElementById('tax-increase-rate').value) / 100;
+      const safeWithdrawalRate = parseFloat(document.getElementById('safe-withdrawal').value) / 100;
+      const maxAge = parseInt(document.getElementById('max-age').value);
+
+      return {
+        profile: {
+          birthday,
+          age,
+          maritalStatus,
+          stdDeduction,
+          userName,
+          spouseName
+        },
+        income: {
+          current: currentIncome,
+          self: incomeSelf,
+          spouse: incomeSpouse,
+          afterTax: {
+            self: afterTaxIncomeSelf,
+            spouse: afterTaxIncomeSpouse,
+            total: totalAfterTaxIncome
+          },
+          growthRate: incomeGrowth
+        },
+        socialSecurity: {
+          self: {
+            amount: ssSelf,
+            startAge: ssStartAgeSelf
+          },
+          spouse: {
+            amount: ssSpouse,
+            startAge: ssStartAgeSpouse
+          },
+          increaseRate: ssIncreaseRate
+        },
+        expenses: {
+          current: currentExpenses,
+          growthRate: expenseGrowth,
+          retirementType: retirementExpenseType
+        },
+        settings: {
+          inflationRate,
+          educationInflation,
+          healthcareInflation,
+          defaultReturn,
+          taxIncreaseRate,
+          safeWithdrawalRate,
+          maxAge
+        },
+        accounts,
+        goals,
+        windfalls
+      };
+    }
+
+    function validateSavingsAmount() {
+      const userData = collectUserData();
+
+      const monthlyAfterTaxIncome = userData.income.afterTax.total / 12;
+      const monthlyExpenses = userData.expenses.current / 12;
+      const maxMonthlySavings = monthlyAfterTaxIncome - monthlyExpenses;
+
+      let totalMonthlySavings = 0;
+
+      userData.accounts.forEach(account => {
+        if (account.contributionType === 'dollar') {
+          totalMonthlySavings += account.monthlyContribution;
+        } else if (account.contributionType === 'percentage') {
+          const ownerIncome = account.owner === 'self' ?
+            userData.income.afterTax.self : userData.income.afterTax.spouse;
+          const monthlyIncome = ownerIncome / 12;
+          totalMonthlySavings += monthlyIncome * account.contributionPercentage;
+        } else if (account.contributionType === 'max') {
+          totalMonthlySavings += account.maxContribution / 12;
+        }
+      });
+
+      if (totalMonthlySavings > maxMonthlySavings) {
+        return {
+          valid: false,
+          message: `Your total monthly savings (${totalMonthlySavings.toFixed(2)}) exceed your available after-tax income minus expenses (${maxMonthlySavings.toFixed(2)}). Please adjust your savings or income/expenses.`
+        };
+      }
+
+      return { valid: true };
+    }
+
+    function calculateAge(birthDate) {
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         age--;
       }
-      
-      // Set projection timeline until age 100
-      var projectionYears = 100 - age;
-      
-      // Read account information from table rows
-      var accounts = [];
-      var accountRows = document.querySelectorAll("#accounts-body tr");
-      accountRows.forEach(function(row) {
-        var type = row.querySelector(".account-type").value;
-        var owner = row.querySelector(".account-owner").value;
-        var balance = parseFloat(row.querySelector(".account-balance").value);
-        var contribution = parseFloat(row.querySelector(".account-contribution").value);
-        var rate = parseFloat(row.querySelector(".account-return").value) / 100;
-        var match = parseFloat(row.querySelector(".account-match").value);
-        accounts.push({type, owner, balance, contribution, rate, match});
-      });
-      
-      // Define retirement assumptions
-      var retirementAge = 62; // could be refined by reading from a goal
-      var safeWithdrawalRate = 0.04;
-      
-      // Use portfolioValue to track total savings in retirement phase
-      var portfolioValue = accounts.reduce((sum, acct) => sum + acct.balance, 0);
-      
-      // Prepare results table header
-      var resultsHTML = `<table>
-          <tr>
-            <th>Year</th>
-            <th>Age</th>
-            <th>Income</th>
-            <th>Expenses</th>
-            <th>Net Cash Flow</th>
-            <th>Total Savings</th>
-          </tr>`;
-          
-      var currentYear = today.getFullYear();
-      var income = currentIncome;
-      var expenses = currentExpenses;
-      
-      // Loop through each year in the projection period
-      for (var i = 0; i <= projectionYears; i++) {
-        var year = currentYear + i;
-        var currentAge = age + i;
-        
-        // Pre-retirement: update each account with contributions and compound interest
-        if (currentAge < retirementAge) {
-          accounts.forEach(function(acct) {
-            var annualContribution = acct.contribution * 12;
-            if (acct.type === "401k") {
-              annualContribution += acct.match;
-            }
-            // Use account-specific rate (or defaultReturn if not provided)
-            acct.balance = acct.balance * (1 + (acct.rate || defaultReturn)) + annualContribution;
-          });
-          portfolioValue = accounts.reduce((sum, acct) => sum + acct.balance, 0);
-        } else {
-          // Post-retirement: apply interest growth to the total portfolio and subtract withdrawals
-          portfolioValue = portfolioValue * (1 + defaultReturn);
-          var withdrawal = portfolioValue * safeWithdrawalRate;
-          portfolioValue -= withdrawal;
-        }
-        
-        // Calculate net cash flow for the year
-        var netCashFlow = income - expenses;
-        
-        resultsHTML += `<tr>
-                          <td>${year}</td>
-                          <td>${currentAge}</td>
-                          <td>$${income.toFixed(2)}</td>
-                          <td>$${expenses.toFixed(2)}</td>
-                          <td>$${netCashFlow.toFixed(2)}</td>
-                          <td>$${portfolioValue.toFixed(2)}</td>
-                        </tr>`;
-                        
-        // Update income and expenses for next year using exponential growth
-        income *= (1 + incomeGrowth);
-        expenses *= (1 + expenseGrowth);
-      }
-      
-      resultsHTML += `</table>`;
-      document.getElementById("results").innerHTML = resultsHTML;
+      return age;
     }
+
+    function calculateFutureIncome(currentIncome, growthRate, years) {
+      return currentIncome * Math.pow(1 + growthRate, years);
+    }
+
+    function calculateFutureExpenses(currentExpenses, growthRate, years) {
+      return currentExpenses * Math.pow(1 + growthRate, years);
+    }
+
+    function calculateSavingsRates(userData) {
+      let selfContributions = 0;
+      let spouseContributions = 0;
+
+      userData.accounts.forEach(account => {
+        let annualContribution = 0;
+
+        if (account.contributionType === 'dollar') {
+          annualContribution = account.monthlyContribution * 12;
+        } else if (account.contributionType === 'percentage') {
+          const ownerIncome = account.owner === 'self' ? userData.income.self : userData.income.spouse;
+          annualContribution = ownerIncome * account.contributionPercentage;
+        } else if (account.contributionType === 'max') {
+          annualContribution = account.maxContribution;
+        }
+
+        if (account.owner === 'self') {
+          selfContributions += annualContribution;
+        } else {
+          spouseContributions += annualContribution;
+        }
+      });
+
+      const totalContributions = selfContributions + spouseContributions;
+
+      let selfSavingsRate = 0;
+      let spouseSavingsRate = 0;
+      let householdSavingsRate = 0;
+
+      if (userData.profile.maritalStatus === 'married') {
+        selfSavingsRate = userData.income.self > 0 ? (selfContributions / userData.income.self) * 100 : 0;
+        spouseSavingsRate = userData.income.spouse > 0 ? (spouseContributions / userData.income.spouse) * 100 : 0;
+        householdSavingsRate = (totalContributions / userData.income.current) * 100;
+      } else {
+        householdSavingsRate = (totalContributions / userData.income.current) * 100;
+      }
+
+      return {
+        self: selfSavingsRate,
+        spouse: spouseSavingsRate,
+        household: householdSavingsRate
+      };
+    }
+
+    function generateProjection() {
+      const validation = validateSavingsAmount();
+      if (!validation.valid) {
+        alert(validation.message);
+        return;
+      }
+
+      const userData = collectUserData();
+
+      let retirementAge = 65;
+      let retirementYear = currentYear + (retirementAge - userData.profile.age);
+      const retirementGoal = userData.goals.find(goal => goal.type === 'retirement');
+
+      if (retirementGoal) {
+        retirementAge = retirementGoal.targetAge;
+        retirementYear = retirementGoal.targetYear;
+      }
+
+      const totalYears = userData.settings.maxAge - userData.profile.age;
+
+      projectionData = [];
+
+      let accountBalances = userData.accounts.map(account => ({
+        id: account.id,
+        type: account.type,
+        owner: account.owner,
+        balance: account.balance
+      }));
+
+      let initialRetirementExpense = null;
+
+      for (let year = 0; year <= totalYears; year++) {
+        const currentAge = userData.profile.age + year;
+        const projectionYear = currentYear + year;
+        const isRetired = currentAge >= retirementAge;
+
+        let yearlyIncome = 0;
+        if (!isRetired) {
+          yearlyIncome = calculateFutureIncome(
+            userData.income.current,
+            userData.income.growthRate,
+            year
+          );
+        }
+
+        const currentTaxRatio = userData.income.afterTax.total / userData.income.current;
+        const afterTaxIncome = yearlyIncome * currentTaxRatio;
+
+        const incomeSelf = calculateFutureIncome(userData.income.self, userData.income.growthRate, year);
+        const incomeSpouse = calculateFutureIncome(userData.income.spouse, userData.income.growthRate, year);
+
+        let socialSecurityIncome = 0;
+
+        if (currentAge >= userData.socialSecurity.self.startAge) {
+          const yearsReceivingSS = currentAge - userData.socialSecurity.self.startAge;
+          socialSecurityIncome += userData.socialSecurity.self.amount *
+            Math.pow(1 + userData.socialSecurity.increaseRate, yearsReceivingSS);
+        }
+
+        if (userData.profile.maritalStatus === 'married' &&
+          currentAge >= userData.socialSecurity.spouse.startAge) {
+          const yearsReceivingSS = currentAge - userData.socialSecurity.spouse.startAge;
+          socialSecurityIncome += userData.socialSecurity.spouse.amount *
+            Math.pow(1 + userData.socialSecurity.increaseRate, yearsReceivingSS);
+        }
+
+        let yearlyExpenses = 0;
+
+        if (isRetired) {
+          if (userData.expenses.retirementType === 'withdrawal' && currentAge === retirementAge) {
+            const totalRetirementSavings = accountBalances.reduce((sum, account) => sum + account.balance, 0);
+            initialRetirementExpense = totalRetirementSavings * userData.settings.safeWithdrawalRate;
+            yearlyExpenses = initialRetirementExpense;
+          } else if (userData.expenses.retirementType === 'withdrawal' && currentAge > retirementAge) {
+            const yearsSinceRetirement = currentAge - retirementAge;
+            yearlyExpenses = initialRetirementExpense *
+              Math.pow(1 + userData.settings.inflationRate, yearsSinceRetirement);
+          } else {
+            yearlyExpenses = calculateFutureExpenses(
+              userData.expenses.current,
+              userData.expenses.growthRate,
+              year
+            );
+          }
+        } else {
+          yearlyExpenses = calculateFutureExpenses(
+            userData.expenses.current,
+            userData.expenses.growthRate,
+            year
+          );
+        }
+
+        const yearGoals = userData.goals.filter(goal => {
+          if (goal.type === 'retirement') return false;
+          return goal.targetYear === projectionYear;
+        });
+
+        const goalExpenses = yearGoals.reduce((sum, goal) => {
+          if (goal.type === 'home') {
+            return sum + goal.downpaymentAmount;
+          }
+          return sum + goal.targetAmount;
+        }, 0);
+
+        const yearWindfalls = userData.windfalls.filter(windfall => windfall.year === projectionYear);
+        const windfallIncome = yearWindfalls.reduce((sum, windfall) => sum + windfall.amount, 0);
+        const windfallSavings = yearWindfalls.reduce((sum, windfall) => sum + windfall.savingsAmount, 0);
+
+        let employeeContributions = 0;
+        let employerContributions = 0;
+
+        const yearlyContributions = userData.accounts.map(account => {
+          let annualContribution = 0;
+          let employerMatch = 0;
+
+          if (isRetired && !(account.type.includes('ira') || account.type === 'trad-retirement')) {
+            return {
+              accountId: account.id,
+              employeeContribution: 0,
+              employerContribution: 0
+            };
+          }
+
+          if (account.contributionType === 'dollar') {
+            annualContribution = account.monthlyContribution * 12;
+          } else if (account.contributionType === 'percentage') {
+            const ownerSalary = account.owner === 'self' ? incomeSelf : incomeSpouse;
+            annualContribution = ownerSalary * account.contributionPercentage;
+          } else if (account.contributionType === 'max') {
+            const maxIncreaseFactor = Math.pow(1.02, year);
+            annualContribution = account.maxContribution * maxIncreaseFactor;
+          }
+
+          if (account.type === 'trad-retirement') {
+            if (account.matchType === 'percentage') {
+              const ownerSalary = account.owner === 'self' ? incomeSelf : incomeSpouse;
+              employerMatch = ownerSalary * (account.companyMatch / 100);
+            } else {
+              employerMatch = account.companyMatch;
+            }
+          }
+
+          employeeContributions += annualContribution;
+          employerContributions += employerMatch;
+
+          return {
+            accountId: account.id,
+            employeeContribution: annualContribution,
+            employerContribution: employerMatch
+          };
+        });
+
+        const totalSavingsContributions = employeeContributions + employerContributions;
+
+        let netCashFlow = afterTaxIncome + socialSecurityIncome + windfallIncome -
+          yearlyExpenses - goalExpenses - employeeContributions;
+
+        accountBalances = accountBalances.map((accountBalance, index) => {
+          const account = userData.accounts.find(a => a.id === accountBalance.id);
+          const contribution = yearlyContributions.find(c => c.accountId === accountBalance.id);
+
+          let newBalance = accountBalance.balance * (1 + account.annualReturn);
+
+          if (contribution) {
+            newBalance += contribution.employeeContribution;
+          }
+
+          if (contribution) {
+            newBalance += contribution.employerContribution;
+          }
+
+          if (accountBalance.id === userData.accounts[0]?.id && windfallSavings > 0) {
+            newBalance += windfallSavings;
+          }
+
+          if (isRetired && (account.type.includes('ira') || account.type === 'trad-retirement' || account.type === 'brokerage')) {
+            if (netCashFlow < 0 && newBalance > 0) {
+              const withdrawal = Math.min(Math.abs(netCashFlow), newBalance);
+              newBalance -= withdrawal;
+              netCashFlow += withdrawal;
+            }
+          }
+
+          return {
+            ...accountBalance,
+            balance: newBalance
+          };
+        });
+
+        const totalSavings = accountBalances.reduce((sum, account) => sum + account.balance, 0);
+
+        let formattedNetCashFlow = netCashFlow;
+        let netCashFlowClass = netCashFlow === 0 ? '' : (netCashFlow > 0 ? 'positive' : 'negative');
+
+        projectionData.push({
+          year: projectionYear,
+          age: currentAge,
+          income: yearlyIncome,
+          afterTaxIncome: afterTaxIncome,
+          socialSecurity: socialSecurityIncome,
+          employeeContributions: employeeContributions,
+          employerContributions: employerContributions,
+          totalSavingsContributions: totalSavingsContributions,
+          expenses: yearlyExpenses,
+          goalExpenses: goalExpenses,
+          goals: yearGoals,
+          windfallIncome: windfallIncome,
+          windfallSavings: windfallSavings,
+          totalExpenses: yearlyExpenses + goalExpenses,
+          netCashFlow: formattedNetCashFlow,
+          netCashFlowClass: netCashFlowClass,
+          accountBalances: [...accountBalances],
+          totalSavings: totalSavings,
+          isRetired: isRetired
+        });
+      }
+
+      generateFinancialReport(userData);
+
+      resultsSection.classList.remove('hidden');
+      resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function generateFinancialReport(userData) {
+      generateSummary(userData);
+      generateResultStatus(userData);
+      generateProjectionTable();
+    }
+
+    function generateSummary(userData) {
+      const summaryContainer = document.getElementById('summary-container');
+      const finalYear = projectionData[projectionData.length - 1];
+
+      let retirementAge = 65;
+      let retirementYear = currentYear + (retirementAge - userData.profile.age);
+      const retirementGoal = userData.goals.find(goal => goal.type === 'retirement');
+
+      if (retirementGoal) {
+        retirementAge = retirementGoal.targetAge;
+        retirementYear = retirementGoal.targetYear;
+      }
+
+      const retirementIndex = projectionData.findIndex(data => data.year === retirementYear);
+      const retirementData = retirementIndex >= 0 ? projectionData[retirementIndex] : null;
+
+      const totalCurrentSavings = userData.accounts.reduce((sum, account) => sum + account.balance, 0);
+      const totalMonthlyContributions = userData.accounts.reduce((sum, account) => sum + account.monthlyContribution, 0);
+      const savingsRates = calculateSavingsRates(userData);
+
+      let summaryHtml = `
+                <h3>Financial Summary</h3>
+                <p><strong>Current Age:</strong> ${userData.profile.age}</p>
+                <p><strong>Target Retirement Age:</strong> ${retirementAge}</p>
+                <p><strong>Total Balance of All Accounts:</strong> ${formatCurrency(totalCurrentSavings)}</p>
+                <p><strong>Monthly Savings:</strong> ${formatCurrency(totalMonthlyContributions)}</p>
+                <p><strong>Household Savings Rate:</strong> ${savingsRates.household.toFixed(1)}% of income</p>
+            `;
+
+      if (userData.profile.maritalStatus === 'married') {
+        summaryHtml += `
+                    <p><strong>${userData.profile.userName}'s Savings Rate:</strong> ${savingsRates.self.toFixed(1)}% of income</p>
+                    <p><strong>${userData.profile.spouseName}'s Savings Rate:</strong> ${savingsRates.spouse.toFixed(1)}% of income</p>
+                    <p class="info-text">Note: Savings rates do not include employer contributions</p>
+                `;
+      }
+
+      summaryHtml += `
+                <p><strong>Projected Savings at Retirement (Age ${retirementAge}):</strong> ${retirementData ? formatCurrency(retirementData.totalSavings) : 'N/A'}</p>
+                <p><strong>Projected Savings at Age ${finalYear.age}:</strong> ${formatCurrency(finalYear.totalSavings)}</p>
+            `;
+
+      summaryContainer.innerHTML = summaryHtml;
+    }
+
+    function calculateAdjustments(userData) {
+      const retirementGoal = userData.goals.find(goal => goal.type === 'retirement');
+      const retirementTargetAmount = retirementGoal ? retirementGoal.targetAmount : 0;
+      const retirementYear = retirementGoal ? retirementGoal.targetYear : currentYear + (65 - userData.profile.age);
+      const retirementIndex = projectionData.findIndex(data => data.year === retirementYear);
+
+      const retirementData = retirementIndex >= 0 ? projectionData[retirementIndex] : null;
+      const retirementSavingsProjected = retirementData ? retirementData.totalSavings : 0;
+      const retirementGoalSuccess = retirementSavingsProjected >= retirementTargetAmount;
+
+      const finalYear = projectionData[projectionData.length - 1];
+      const lifetimeSuccess = finalYear.totalSavings > 0;
+
+      let retirementAdjustment = null;
+      if (!retirementGoalSuccess) {
+        const shortfall = retirementTargetAmount - retirementSavingsProjected;
+        const yearsToRetirement = retirementIndex;
+        const monthlyRate = userData.settings.defaultReturn / 12;
+        const months = yearsToRetirement * 12;
+
+        const additionalMonthlySavingsForRetirement = shortfall /
+          ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate * (1 + monthlyRate));
+
+        retirementAdjustment = {
+          successful: false,
+          additionalMonthlySavings: Math.max(100, additionalMonthlySavingsForRetirement)
+        };
+      } else {
+        const excess = retirementSavingsProjected - retirementTargetAmount;
+        const yearsToRetirement = retirementIndex;
+        const monthlyRate = userData.settings.defaultReturn / 12;
+        const months = yearsToRetirement * 12;
+
+        const savingsReductionForRetirement = excess /
+          ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate * (1 + monthlyRate));
+
+        retirementAdjustment = {
+          successful: true,
+          possibleMonthlySavingsReduction: Math.min(savingsReductionForRetirement,
+            userData.accounts.reduce((sum, a) => sum + a.monthlyContribution, 0))
+        };
+      }
+
+      let lifetimeAdjustment = null;
+      if (!lifetimeSuccess) {
+        let depletionYear = null;
+        let depletionIndex = null;
+
+        for (let i = 0; i < projectionData.length; i++) {
+          if (projectionData[i].totalSavings <= 0 && i > 0 && projectionData[i - 1].totalSavings > 0) {
+            depletionYear = projectionData[i].year;
+            depletionIndex = i;
+            break;
+          }
+        }
+
+        if (depletionIndex) {
+          const shortfall = Math.abs(finalYear.totalSavings);
+          const totalMonths = projectionData.length * 12;
+          const additionalMonthlySavingsForLifetime = shortfall / totalMonths;
+
+          lifetimeAdjustment = {
+            successful: false,
+            depletionYear,
+            depletionAge: projectionData[depletionIndex].age,
+            additionalMonthlySavings: Math.max(100, additionalMonthlySavingsForLifetime)
+          };
+        } else {
+          lifetimeAdjustment = {
+            successful: false,
+            additionalMonthlySavings: 500
+          };
+        }
+      } else {
+        const excess = finalYear.totalSavings;
+        const totalMonths = projectionData.length * 12;
+        const savingsReductionForLifetime = excess / totalMonths;
+
+        lifetimeAdjustment = {
+          successful: true,
+          possibleMonthlySavingsReduction: Math.min(savingsReductionForLifetime,
+            userData.accounts.reduce((sum, a) => sum + a.monthlyContribution, 0))
+        };
+      }
+
+      const overallSuccess = retirementGoalSuccess && lifetimeSuccess;
+      const partialSuccess = retirementGoalSuccess || lifetimeSuccess;
+
+      return {
+        overallSuccess,
+        partialSuccess,
+        retirementGoalSuccess,
+        lifetimeSuccess,
+        retirementAdjustment,
+        lifetimeAdjustment,
+        finalAdjustment: !overallSuccess ?
+          {
+            successful: false,
+            additionalMonthlySavings: Math.max(
+              retirementAdjustment?.additionalMonthlySavings || 0,
+              lifetimeAdjustment?.additionalMonthlySavings || 0
+            )
+          } :
+          {
+            successful: true,
+            possibleMonthlySavingsReduction: Math.min(
+              retirementAdjustment?.possibleMonthlySavingsReduction || Infinity,
+              lifetimeAdjustment?.possibleMonthlySavingsReduction || Infinity
+            )
+          }
+      };
+    }
+
+    function generateResultStatus(userData) {
+      const resultStatusContainer = document.getElementById('result-status');
+
+      const adjustments = calculateAdjustments(userData);
+
+      let statusHtml = '';
+      let statusClass = '';
+
+      if (adjustments.overallSuccess) {
+        statusClass = "success-bg";
+      } else if (adjustments.partialSuccess) {
+        statusClass = "warning-bg";
+      } else {
+        statusClass = "danger-bg";
+      }
+
+      const finalYear = projectionData[projectionData.length - 1];
+
+      statusHtml = `
+                <div class="${statusClass}">
+                    <h3 class="${adjustments.overallSuccess ? 'success' : (adjustments.partialSuccess ? 'warning' : 'danger')}">
+                        ${adjustments.overallSuccess ? 'Your Financial Plan Succeeds! 🎉' :
+          (adjustments.partialSuccess ? 'Your Financial Plan Partially Succeeds ⚠️' :
+            'Your Financial Plan Needs Attention ⚠️')}
+                    </h3>
+            `;
+
+      statusHtml += `
+                <h4>Retirement Goal Check:</h4>
+                <p>${adjustments.retirementGoalSuccess ?
+          '✅ You are on track to reach your retirement savings goal.' :
+          '❌ You are not on track to reach your retirement savings goal.'}
+                </p>
+            `;
+
+      if (!adjustments.retirementGoalSuccess) {
+        statusHtml += `
+                    <p><strong>Recommendation:</strong> To reach your retirement goal, you need to increase your monthly savings by approximately 
+                    ${formatCurrency(adjustments.retirementAdjustment.additionalMonthlySavings)}.</p>
+                `;
+      } else {
+        statusHtml += `
+                    <p>Based on your current savings rate, you could reduce your monthly savings by up to 
+                    ${formatCurrency(adjustments.retirementAdjustment.possibleMonthlySavingsReduction)} and still reach your retirement goal.</p>
+                `;
+      }
+
+      statusHtml += `
+                <h4>Lifetime Positive Savings Check:</h4>
+                <p>${adjustments.lifetimeSuccess ?
+          '✅ You will maintain positive savings throughout your entire lifetime.' :
+          '❌ Your savings will be depleted before your maximum age.'}
+                </p>
+            `;
+
+      if (!adjustments.lifetimeSuccess) {
+        if (adjustments.lifetimeAdjustment.depletionYear) {
+          statusHtml += `<p>Your savings are projected to be depleted by year ${adjustments.lifetimeAdjustment.depletionYear} (age ${adjustments.lifetimeAdjustment.depletionAge}).</p>`;
+        }
+
+        statusHtml += `
+                    <p><strong>Recommendation:</strong> To maintain positive savings throughout your lifetime, 
+                    you need to increase your monthly savings by approximately 
+                    ${formatCurrency(adjustments.lifetimeAdjustment.additionalMonthlySavings)}.</p>
+                `;
+      } else {
+        statusHtml += `
+                    <p>Based on your current savings rate, you could reduce your monthly savings by up to 
+                    ${formatCurrency(adjustments.lifetimeAdjustment.possibleMonthlySavingsReduction)} 
+                    and still maintain positive savings throughout your lifetime.</p>
+                `;
+      }
+
+      if (!adjustments.overallSuccess) {
+        statusHtml += `
+                    <h4>Final Recommendation:</h4>
+                    <p>To ensure your financial plan fully succeeds on both measures, 
+                    you should increase your monthly savings by 
+                    ${formatCurrency(adjustments.finalAdjustment.additionalMonthlySavings)}.</p>
+                    <p>Other options include:</p>
+                    <ul>
+                        <li>Reduce your planned retirement expenses</li>
+                        <li>Delay retirement by a few years</li>
+                        <li>Adjust your investment strategy for potentially higher returns</li>
+                    </ul>
+                `;
+      } else {
+        statusHtml += `
+                    <h4>Final Summary:</h4>
+                    <p>Your financial plan succeeds on both measures. If desired, you could reduce your monthly savings by up to
+                    ${formatCurrency(adjustments.finalAdjustment.possibleMonthlySavingsReduction)} and still meet all your goals.</p>
+                    <p>This would allow you to allocate more towards your present self while still securing your future.</p>
+                `;
+      }
+
+      statusHtml += `</div>`;
+
+      resultStatusContainer.innerHTML = statusHtml;
+    }
+
+    function generateProjectionTable() {
+      const tableContainer = document.getElementById('projection-table');
+
+      let tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Age</th>
+                            <th>Income</th>
+                            <th>After-Tax Income</th>
+                            <th>Social Security</th>
+                            <th>Employer Contributions</th>
+                            <th>Windfall</th>
+                            <th>Expenses</th>
+                            <th>Goals</th>
+                            <th>Net Cash Flow</th>
+                            <th>Total Savings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+      projectionData.forEach(year => {
+        const rowClass = year.totalSavings <= 0 ? 'danger' : '';
+
+        let goalsInfo = '';
+        if (year.goals && year.goals.length > 0) {
+          year.goals.forEach(goal => {
+            let amount = goal.type === 'home' ? goal.downpaymentAmount : goal.targetAmount;
+            goalsInfo += `${goal.name}: ${formatCurrency(amount)}<br>`;
+          });
+        }
+
+        tableHtml += `
+                    <tr class="${rowClass}">
+                        <td>${year.year}</td>
+                        <td>${year.age}</td>
+                        <td>${formatCurrency(year.income)}</td>
+                        <td>${formatCurrency(year.afterTaxIncome)}</td>
+                        <td>${formatCurrency(year.socialSecurity)}</td>
+                        <td>${formatCurrency(year.employerContributions)}</td>
+                        <td>${formatCurrency(year.windfallSavings)}</td>
+                        <td>${formatCurrency(year.expenses)}</td>
+                        <td>${goalsInfo || '-'}</td>
+                        <td>${formatCurrency(year.netCashFlow)}</td>
+                        <td>${formatCurrency(year.totalSavings)}</td>
+                    </tr>
+                `;
+      });
+
+      tableHtml += `
+                    </tbody>
+                </table>
+            `;
+
+      tableContainer.innerHTML = tableHtml;
+    }
+
+    function formatCurrency(value) {
+      return Math.round(value).toLocaleString();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const userName = document.getElementById('user-name');
+      const spouseName = document.getElementById('spouse-name');
+
+      if (userName && spouseName) {
+        userName.addEventListener('input', function () {
+          updateAccountOwnerOptions();
+          updateIncomeLabels();
+        });
+
+        spouseName.addEventListener('input', function () {
+          updateAccountOwnerOptions();
+          updateIncomeLabels();
+        });
+      }
+
+      const goalNameField = document.getElementById('goal-name');
+      if (goalNameField) {
+        goalNameField.addEventListener('input', function () {
+          this.dataset.userEdited = 'true';
+        });
+      }
+
+      const goalAmountField = document.getElementById('goal-amount');
+      if (goalAmountField) {
+        goalAmountField.addEventListener('input', function () {
+          this.dataset.userEdited = 'true';
+        });
+      }
+
+      const windfallNameField = document.getElementById('windfall-name');
+      if (windfallNameField) {
+        windfallNameField.addEventListener('input', function () {
+          this.dataset.userEdited = 'true';
+        });
+      }
+    });
   </script>
 </body>
 </html>
